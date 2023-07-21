@@ -1,0 +1,40 @@
+name: Docs
+on:
+  push:
+    paths:
+      - "docs/**"
+      # - "README.md"
+      # - ".github/workflows/gh-page.yml"
+    branches:
+      - "main"
+  workflow_dispatch:
+env:
+  CI: false
+jobs:
+  build:
+    runs-on: [self-hosted, Linux]
+    permissions:
+      contents: write
+    steps:
+      - name: Basic info
+        run: |
+          echo "Build for ${{ github.ref }} branch in ${{ github.repository }} repository."
+          echo "Job triggered by ${{ github.event_name }}, on self-hosted ${{ runner.os }}."  
+            echo "Log level: ${{ github.event.inputs.logLevel }}"
+          echo "Tags: ${{ github.event.inputs.tags }}"
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ssh-key: ${{secrets.SSH_PRIVATE_KEY}}
+          set-safe-directory: false
+      - name: Build external doc
+        run: |
+            cd docs
+            make html
+            make latexpdf
+      - name: External html for github page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
