@@ -1,0 +1,24 @@
+h1 {
+    color: #003B71 !important;
+}
+
+p.title.logo__title{
+    font-size:2rem;
+    font-weight: bold;
+}
+
+#rtd-footer-container{
+    height:1rem;
+}
+
+.bd-main{
+    width:100%;
+}
+
+.bd-main .bd-content{
+    justify-content: left;
+}
+
+.bd-footer-article {
+    margin-top: auto
+}
