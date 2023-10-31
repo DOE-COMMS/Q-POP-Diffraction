@@ -1,0 +1,990 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Diffraction Documentation &#8212; Q-POP</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'doc';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Q-POP</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/DOE-COMMS" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:lqc3@psu.edu" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-regular fa-envelope"></i></span>
+            <label class="sr-only">Email</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://sites.psu.edu/doecomms/news/" title="DOE COMMS" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-regular fa-file"></i></span>
+            <label class="sr-only">DOE COMMS</label></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/DOE-COMMS/Q-POP-Diffraction" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/DOE-COMMS/Q-POP-Diffraction/blob/main/docs/doc.md?plain=1" target="_blank"
+   class="btn btn-sm btn-source-file-button dropdown-item"
+   title="Show source"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">Show source</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/DOE-COMMS/Q-POP-Diffraction/edit/main/docs/doc.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/DOE-COMMS/Q-POP-Diffraction/issues/new?title=Issue%20on%20page%20%2Fdoc.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/doc.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Diffraction Documentation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#purpose">1.Purpose</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-files">2.Input files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paramerter-system-in">2.1.<em>paramerter.system.in</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-atom-in">2.2.<em>parameter.atom.in</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phasefra-in-optional">2.3.<em>phaseFra.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#displace-in-optional">2.4.<em>displace.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strucord-in-optional">2.5.<em>strucOrd.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#region-in-optional">2.6.<em>region.in (optional)</em></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#output-files">3.Output files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="diffraction-documentation">
+<h1>Diffraction Documentation<a class="headerlink" href="#diffraction-documentation" title="Permalink to this heading">#</a></h1>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#diffraction-documentation">Diffraction Documentation</a></p>
+<ul>
+<li><p><a class="reference external" href="#contents">Contents</a></p></li>
+<li><p><a class="reference external" href="#1purpose">1.Purpose</a></p></li>
+<li><p><a class="reference external" href="#2input-files">2.Input files</a></p>
+<ul>
+<li><p><a class="reference external" href="#21paramertersystemin">2.1.<em>paramerter.system.in</em></a></p></li>
+<li><p><a class="reference external" href="#22parameteratomin">2.2.<em>parameter.atom.in</em></a></p></li>
+<li><p><a class="reference external" href="#23phasefrain-optional">2.3.<em>phaseFra.in (optional)</em></a></p></li>
+<li><p><a class="reference external" href="#24displacein-optional">2.4.<em>displace.in (optional)</em></a></p></li>
+<li><p><a class="reference external" href="#25strucordin-optional">2.5.<em>strucOrd.in (optional)</em></a></p></li>
+<li><p><a class="reference external" href="#26regionin-optional">2.6.<em>region.in (optional)</em></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#3output-files">3.Output files</a></p></li>
+<li><p><a class="reference external" href="#references">References</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="purpose">
+<h2>1.Purpose<a class="headerlink" href="#purpose" title="Permalink to this heading">#</a></h2>
+<p>The Q-POP-Diffraction module computes the diffraction pattern of a material microstructure predicted by phase-field simulations. It takes inputs of</p>
+<ul class="simple">
+<li><p>crystal cell and atomic information</p></li>
+<li><p>the real-space microstructure data described by the spatial distributions of phases, structural orders, and mechanical displacements that are generated by phase-field simulations, and outputs the corresponding diffraction intensity distribution in the reciprocal space.</p></li>
+</ul>
+<p>Formalism of the diffraction computation can be found in Ref<label for='sidenote-role-1' class='margin-toggle'><span id="id1">
+<sup>1</sup></span>
+
+</label><input type='checkbox' id='sidenote-role-1' name='sidenote-role-1' class='margin-toggle'><span class="sidenote"><sup>1</sup>T. Yang et al. Computing diffraction patterns of microstructures from phase-field simulations. Acta Mater. 239, 118258 (2022).</span>.</p>
+</section>
+<section id="input-files">
+<h2>2.Input files<a class="headerlink" href="#input-files" title="Permalink to this heading">#</a></h2>
+<p>The input of the program consists of 2 required input files including <em><code class="docutils literal notranslate"><span class="pre">parameter.system.in</span></code></em> and <em><code class="docutils literal notranslate"><span class="pre">parameter.atom.in</span></code></em>, and 4 optional input files including <em><code class="docutils literal notranslate"><span class="pre">phaseFra.in</span></code></em>, <em><code class="docutils literal notranslate"><span class="pre">displace.in</span></code></em>, <em><code class="docutils literal notranslate"><span class="pre">strucOrd.in</span></code></em>, and <em><code class="docutils literal notranslate"><span class="pre">region.in</span></code></em>. The choice of optional input file(s) to be provided depends on the type of the system considered.</p>
+<section id="paramerter-system-in">
+<h3>2.1.<em>paramerter.system.in</em><a class="headerlink" href="#paramerter-system-in" title="Permalink to this heading">#</a></h3>
+<p>Declares the size of the system and the number of phases. The format is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 1 Format of the input file <i>parameter.system.in</i></caption>
+	<tr>
+	    <th colspan="3">Data in the file</th>
+	    <th>Explanation</th>
+	</tr >
+    <tr>
+    	<td colspan="3"></td>
+        <td>Comment or empty line</td>
+    </tr>
+	<tr >
+	    <td>l<sub>1</sub></td>
+	    <td>l<sub>2</sub></td>
+	    <td>l<sub>3</sub></td>
+        <td>System size in each direction (in nm)</td>
+	</tr>
+    <tr >
+	    <td>n<sub>1</sub></td>
+	    <td>n<sub>2</sub></td>
+	    <td>n<sub>3</sub></td>
+        <td>Total number of simulation grids in each direction</td>
+	</tr>
+    <tr>
+    	<td>n<sub>s</sub></td>
+        <td>n<sub>f</sub></td>
+        <td></td>
+        <td>Thickness of the substrate and the film (in grid numbers). For a bulk system, put n<sub>s</sub> 		= n<sub>f</sub> = 0.</td>
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+    	<td>Comment or empty line</td>
+    </tr>
+    <tr>
+    	<td>N</td>
+        <td></td>
+        <td></td>
+        <td>Total number of phases</td>
+    </tr>
+    <tr>
+    	<td>H</td>
+        <td></td>
+        <td></td>
+        <td>Total number of structural order parameters</td>
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+        <td>Comment or empty line</td>
+    </tr>
+    <tr>
+        <td>ε<sub>11</sub></td>
+        <td>ε<sub>22</sub></td>
+        <td>ε<sub>33</sub></td>
+        <td rowspan="2">Average mechanical strain of the system</td>
+    </tr>
+    <tr>
+        <td>ε<sub>23</sub></td>
+        <td>ε<sub>13</sub></td>
+        <td>ε<sub>12</sub></td>
+    </tr>
+</table>
+</section>
+<section id="parameter-atom-in">
+<h3>2.2.<em>parameter.atom.in</em><a class="headerlink" href="#parameter-atom-in" title="Permalink to this heading">#</a></h3>
+<p>Declares the crystal cell and atomic information. The format is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 2 Format of the input file <i>parameter.atom.in</i></caption>
+	<tr>
+	    <th colspan="3">Data in the file</th>
+	    <th colspan="2">Explanation</th>
+	</tr >
+    <tr>
+    	<td colspan="3"></td>
+        <td colspan="2">Comment or empty line</td>
+    </tr>
+	<tr >
+	    <td>q<sub>10</sub></td>
+	    <td>q<sub>20</sub></td>
+	    <td>q<sub>30</sub></td>
+        <td colspan="2">Reciprocal lattice point around which the diffraction pattern will be calculated (nm<sup>-1</sup>)</td>
+	</tr>
+    <tr >
+	    <td>a<sub>1</sub></td>
+	    <td>a<sub>2</sub></td>
+	    <td>a<sub>3</sub></td>
+        <td colspan="2">Lattice parameter a of an unstrained unit cell (nm)</td>
+	</tr>
+    <tr >
+	    <td>b<sub>1</sub></td>
+	    <td>b<sub>2</sub></td>
+	    <td>b<sub>3</sub></td>
+        <td colspan="2">Lattice parameter b of an unstrained unit cell (nm)</td>
+	</tr>
+    <tr>
+        <td>N</td>
+        <td></td>
+        <td></td>
+        <td colspan="2">Number of atoms in a unit cell</td>
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+        <td colspan="2">Comment or empty line</td>
+    </tr>
+    <tr>
+        <td>ΔR<sub>n,1</sub></td>
+	    <td>ΔR<sub>n,2</sub></td>
+	    <td>ΔR<sub>n,3</sub></td>
+        <td colspan="2">Coordinates of the n-th atom in a unit cell (unitless). <font color="blue">This line repeats N times, in the sequence of n=1,2,…,N.</font></td> 
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+        <td colspan="2">Comment or empty line</td>
+    </tr>
+    <tr>
+        <td>m</td>
+        <td></td>
+        <td></td>
+        <td colspan="2">Phase identifier (ID)</td>
+    </tr>
+    <tr>
+        <td>f<sub>n,m</sub>(real)</td>
+    	<td>f<sub>n,m</sub>(image)</td>
+        <td></td>
+        <td>Atomic form factor of the n-th atom in a unit cell of the m-th phase, real and imaginary parts (unitless). <font color="blue">This line repeats N times, in the sequence of n=1,2,…,N.</font> </td>
+        <td rowspan="2"><font color="blue">This part further repeats M times, in the sequence of m=1,2,…,M. Each repetition provides the information of one phase.</font></td>
+    </tr>
+    <tr>
+        <td>b<sub>n,m,h,1</sub></td>
+        <td>b<sub>n,m,h,2</sub></td>
+        <td>b<sub>n,m,h,3</sub></td>
+        <td>Atomic-displacement-over-order-parameter coefficient bn,m,h of the n-th atom over the h-th order parameter, in the m-th phase. <font color="blue">This line repeats N×H times, in the sequence of (n,h)=(1,1),(1,2),…,(1,H),(2,1),…,(2,H),…,(N,H). This line is removed if H=0.</font></td>
+    </tr>
+</table>
+<p>We recommend the <a class="reference external" href="https://henke.lbl.gov/optical_constants/asf.html">X-ray database</a> from Lawrence Berkeley National Laboratory <label for='sidenote-role-2' class='margin-toggle'><span id="id2">
+<sup>2</sup></span>
+
+</label><input type='checkbox' id='sidenote-role-2' name='sidenote-role-2' class='margin-toggle'><span class="sidenote"><sup>2</sup>B.L. Henke, E.M. Gullikson, and J.C. Davis. X-ray interactions: photoabsorption, scattering, transmission, and reflection at E=50-30000 eV, Z=1-92, At. Data Nucl. Data Tables 54, 181 (1993).</span> for atomic form factors.</p>
+</section>
+<section id="phasefra-in-optional">
+<h3>2.3.<em>phaseFra.in (optional)</em><a class="headerlink" href="#phasefra-in-optional" title="Permalink to this heading">#</a></h3>
+<p>Stores an array of the spatial distribution of phase fraction <span class="math notranslate nohighlight">\(η_m (r)\)</span> (unitless) arranged in a row-major order, where m is the phase ID with m=1,2,…,M. This file should be provided for systems with multiple phases that have different chemical compositions (M≥2). It can be obtained from phase-field simulations. The format is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 3 Format of the input file <i>phaseFra.in</i></caption>
+	<tr>
+	    <th colspan="7">Data in the file</th>
+	    <th>Explanation</th>
+	</tr >
+    <tr>
+        <td>n<sub>1</sub></td>
+	    <td>n<sub>2</sub></td>
+	    <td>n<sub>3</sub></td>
+        <td colspan="4"></td>
+        <td>Total number of simulation grids in each direction</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td><i>η</i><sub>1</sub>(1,1,1)</td>
+        <td><i>η</i><sub>2</sub>(1,1,1)</td>
+        <td><b>...</b></td>
+        <td><i>η</i><sub>M</sub>(1,1,1)</td>
+        <td>Phase fraction <i>η</i><sub>m</sub> of the m-th phase (m=1,2,…,M) at grid point (1,1,1)</td>
+    </tr>
+    <tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>n<sub>3</sub></td>
+        <td><i>η</i><sub>1</sub>(1,1,n<sub>3</sub>)</td>
+        <td><i>η</i><sub>2</sub>(1,1,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>η</i><sub>M</sub>(1,1,n<sub>3</sub>)</td>
+        <td>Phase fraction <i>η</i><sub>m</sub> of the m-th phase (m=1,2,…,M) at grid point (1,1,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>η</i><sub>1</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>η</i><sub>2</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>η</i><sub>M</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Phase fraction <i>η</i><sub>m</sub> of the m-th phase (m=1,2,…,M) at grid point (1,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>n<sub>1</sub></td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>η</i><sub>1</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>η</i><sub>2</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>η</i><sub>M</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Phase fraction <i>η</i><sub>m</sub> of the m-th phase (m=1,2,…,M) at grid point (n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+</table>
+</section>
+<section id="displace-in-optional">
+<h3>2.4.<em>displace.in (optional)</em><a class="headerlink" href="#displace-in-optional" title="Permalink to this heading">#</a></h3>
+<p>Stores an array of the spatial distribution of mechanical displacement u® (unit: nm) arranged in a row-major order. This file should be provided for systems that show strong mechanical deformations. It can be obtained from phase-field simulations. The format is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 4 Format of the input file <i>displace.in</i></caption>
+	<tr>
+	    <th colspan="7">Data in the file</th>
+	    <th>Explanation</th>
+	</tr >
+    <tr>
+        <td>n<sub>1</sub></td>
+	    <td>n<sub>2</sub></td>
+	    <td>n<sub>3</sub></td>
+        <td colspan="4"></td>
+        <td>Total number of simulation grids in each direction</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td><i>u</i><sub>1</sub>(1,1,1)</td>
+        <td><i>u</i><sub>2</sub>(1,1,1)</td>
+        <td><b>...</b></td>
+        <td><i>u</i><sub>3</sub>(1,1,1)</td>
+        <td>Displacement <i>u</i> at grid point (1,1,1)</td>
+    </tr>
+    <tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>n<sub>3</sub></td>
+        <td><i>u</i><sub>1</sub>(1,1,n<sub>3</sub>)</td>
+        <td><i>u</i><sub>2</sub>(1,1,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>u</i><sub>3</sub>(1,1,n<sub>3</sub>)</td>
+        <td>Displacement <i>u</i> at grid point (1,1,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>u</i><sub>1</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>u</i><sub>2</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>u</i><sub>3</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Displacement <i>u</i> at grid point (1,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>n<sub>1</sub></td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>u</i><sub>1</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>u</i><sub>2</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>u</i><sub>3</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Displacement <i>u</i> at grid point (n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+</table>
+</section>
+<section id="strucord-in-optional">
+<h3>2.5.<em>strucOrd.in (optional)</em><a class="headerlink" href="#strucord-in-optional" title="Permalink to this heading">#</a></h3>
+<p>Stores an array of the spatial distribution of structural order parameter <span class="math notranslate nohighlight">\(ζ_h (r)\)</span> (unitless) arranged in a row-major order, where h is the structural order parameter ID with h=1,2,…,H. This file should be provided for systems possessing structural orders (H≥1). It can be obtained from phase-field simulations. The format is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 5 Format of the input file <i>strucOrd.in</i> </caption>
+	<tr>
+	    <th colspan="7">Data in the file</th>
+	    <th>Explanation</th>
+	</tr >
+    <tr>
+        <td>n<sub>1</sub></td>
+	    <td>n<sub>2</sub></td>
+	    <td>n<sub>3</sub></td>
+        <td colspan="4"></td>
+        <td>Total number of simulation grids in each direction</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td><i>ζ</i><sub>1</sub>(1,1,1)</td>
+        <td><i>ζ</i><sub>2</sub>(1,1,1)</td>
+        <td><b>...</b></td>
+        <td><i>ζ</i><sub>H</sub>(1,1,1)</td>
+        <td>Value of the h-th order parameter <i>ζ</i><sub>H</sub> (h=1,2,...,H) at grid point (1,1,1)</td>
+    </tr>
+    <tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>n<sub>3</sub></td>
+        <td><i>ζ</i><sub>1</sub>(1,1,n<sub>3</sub>)</td>
+        <td><i>ζ</i><sub>2</sub>(1,1,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>ζ</i><sub>H</sub>(1,1,n<sub>3</sub>)</td>
+        <td>Value of the h-th order parameter <i>ζ</i><sub>H</sub> (h=1,2,...,H) at grid point (1,1,n<sub>3</sub>)</td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>ζ</i><sub>1</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>ζ</i><sub>2</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>ζ</i><sub>H</sub>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Value of the h-th order parameter <i>ζ</i><sub>H</sub> (h=1,2,...,H) at grid point (1,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="7"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>n<sub>1</sub></td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>ζ</i><sub>1</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><i>ζ</i><sub>2</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td><b>...</b></td>
+        <td><i>ζ</i><sub>H</sub>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Value of the h-th order parameter <i>ζ</i><sub>H</sub> (h=1,2,...,H) at grid point (n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+</table>
+</section>
+<section id="region-in-optional">
+<h3>2.6.<em>region.in (optional)</em><a class="headerlink" href="#region-in-optional" title="Permalink to this heading">#</a></h3>
+<p>Stores an array of the spatial distribution of a weight parameter <em>g</em>® (unitless) arranged in a row-major order, describing the selected real-space region the diffraction of which should be computed. <em>g</em>=0~1, where <em>g</em>®=1 indicates that the spatial point r is fully inside the computed region and <em>g</em>®=0 indicates that the spatial point r is outside the region. A diffuse boundary of the region is allowed by using a finite <em>g</em> with 0&lt;<em>g</em>&lt;1, meaning that the spatial point r is partially inside the computed region with a weight of <em>g</em>. If this file is omitted, the program takes a default region for the diffraction computation and then stores the corresponding <em>g</em>® data in an output file <code class="docutils literal notranslate"><span class="pre">region.00000000.dat</span></code>. The format of <em>region.in</em> is as follows:</p>
+<table style="text-align: center">
+    <caption>Table 6 Format of the input file <i>region.in</i> </caption>
+	<tr>
+	    <th colspan="4">Data in the file</th>
+	    <th>Explanation</th>
+	</tr >
+    <tr>
+        <td>n<sub>1</sub></td>
+	    <td>n<sub>2</sub></td>
+	    <td>n<sub>3</sub></td>
+        <td></td>
+        <td>Total number of simulation grids in each direction</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td><i>g</i>(1,1,1)</td>
+        <td>Weight parameter <i>g</i> at grid point (1,1,1) </td>
+    </tr>
+    <tr>
+        <td colspan="4"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>n<sub>3</sub></td>
+        <td><i>g</i>(1,1,n<sub>3</sub>)</td>
+        <td>Weight parameter <i>g</i> at grid point (1,1,n<sub>3</sub>)</td>
+    </tr>
+   	<tr>
+        <td colspan="4"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>g</i>(1,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Weight parameter <i>g</i> at grid point (1,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+   	<tr>
+        <td colspan="4"><b>⋮</b></td>
+        <td><b>⋮</b></td>
+    </tr>
+    <tr>
+        <td>n<sub>1</sub></td>
+        <td>n<sub>2</sub></td>
+        <td>n<sub>3</sub></td>
+        <td><i>g</i>(n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>)</td>
+        <td>Weight parameter <i>g</i> at grid point (n<sub>1</sub>,n<sub>2</sub>,n<sub>3</sub>) </td>
+    </tr>
+</table>
+</section>
+</section>
+<section id="output-files">
+<h2>3.Output files<a class="headerlink" href="#output-files" title="Permalink to this heading">#</a></h2>
+<p>The program outputs 4 files as follows.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">I.00000000.dat</span></code> : Stores an array of the diffraction intensity <em>I</em>(q) (unitless), arranged in a row-major order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lg_{10}I.00000000.dat</span></code> : Stores an array of <span class="math notranslate nohighlight">\(log_{10}\)</span><em>I</em>(q)(unitless), arranged in a row-major order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QVector.00000000.dat</span></code> : Stores an array of the reciprocal space vectors <span class="math notranslate nohighlight">\(q_1\)</span>, <span class="math notranslate nohighlight">\(q_2\)</span>, and <span class="math notranslate nohighlight">\(q_3\)</span> (<span class="math notranslate nohighlight">\(nm^{−1}\)</span>) of the computed diffraction intensity <em>I</em>(q), arranged in a row-major order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">region.00000000.dat</span></code> : Stores an array of the weight parameter g® (unitless) arranged in a row-major order. For the definition of g®, see Section 2.6. The data follow a same format with those in <em><code class="docutils literal notranslate"><span class="pre">region.in</span></code></em>. This output file is generated only if <em><code class="docutils literal notranslate"><span class="pre">region.in</span></code></em> is not provided.</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<hr class="footnotes docutils" />
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#purpose">1.Purpose</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-files">2.Input files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paramerter-system-in">2.1.<em>paramerter.system.in</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-atom-in">2.2.<em>parameter.atom.in</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phasefra-in-optional">2.3.<em>phaseFra.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#displace-in-optional">2.4.<em>displace.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strucord-in-optional">2.5.<em>strucOrd.in (optional)</em></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#region-in-optional">2.6.<em>region.in (optional)</em></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#output-files">3.Output files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Xiaoxing Cheng
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, DOE COMMS.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
