@@ -1,18 +1,12 @@
   module mod_Main   !tuy35 whole file
-
+    use Size_FFT_Para
     implicit none
 
-    !system
-    integer nx,ny,nz,nf,ns,k1,k2
-    integer*8 kt
-    real*8 lx,ly,lz,dx,dy,dz,dt0
-    integer R(3), C(3), HN(2),lstart(3)
     integer trans
-
-    character*8 :: passfilename
 
     real*8,parameter :: l0 = 1.d-9             !length unit
     real*8 os0   !tuy40
+    character*8 :: passfilename
 
     !Order parameter and displacement
     real*8,allocatable,dimension(:,:,:,:),target :: oStruc   !tuy40 px,py,pz
@@ -29,22 +23,30 @@
     integer,allocatable,dimension(:) :: ixD,iyD,izD,outD,rankD
     real*8,allocatable,target :: IDiffr(:,:,:),DQ(:,:,:,:)
     real*8,target :: QCenter(3)
-
+    ! Create a temp array DQ_add_Q save DQ + QCenter
+    real*8,allocatable,target :: DQ_add_Q(:,:,:,:)
   end module
 
 
 
   program main
 
-    use mod_interfaces
-    use mod_fftw_mpi
+    ! use mod_interfaces
+    ! use mod_fftw_mpi
     use mod_Main
     use mod_interface_diffraction
+    use mod_mupro_base, only: type_mupro_SizeContext, mupro_size_setup
+    use mod_mupro_fft, only: type_mupro_FFTContext, mupro_fft_setup
+    use mod_mupro_io, only: mupro_output_4D_one_row, mupro_input_4D_one_row
+    use mod_mupro_io, only: mupro_input_3D, mupro_output_3D
 
     implicit none
-
+  
     integer i,j,k,l,m,n
     logical lexist
+    type(type_mupro_SizeContext) sizeContext
+    type(type_mupro_FFTContext) fftContext
+    
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! initiate mpi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call MPI_INIT(ierr)
@@ -121,16 +123,30 @@
 
     kt = kt0
 
-	call simSizeDeclare(nx,ny,nz,ns,nf,lx,ly,lz,kt_in=kt)
-
+	  ! call simSizeDeclare(nx,ny,nz,ns,nf,lx,ly,lz,kt_in=kt)
+    sizeContext%nx = nx
+    sizeContext%ny = ny
+    sizeContext%nz = nz
+    sizeContext%nf = nf
+    sizecontext%ns = ns
+    sizeContext%dx = dx
+    sizeContext%dy = dy
+    sizeContext%dz = dz
+    call mupro_size_setup(sizeContext)
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
 
-    call fourier_mpi_setup(R,C,HN,lstart,trans)
+    ! call fourier_mpi_setup(R,C,HN,lstart,trans)
+    call mupro_fft_setup(fftContext)
 
-    Rn1 = R(1);Rn2 = R(2); Rn3 = R(3)
-    Cn1 = C(1);Cn2 = C(2); Cn3 = C(3)
-    Hn1 = HN(1);Hn2 = HN(2)
-    lstartR = lstart(1); lstart2 = lstart(2); lstart3 = lstart(3)
+    Rn1 = fftContext%Rn1
+    Rn2 = fftContext%Rn2
+    Rn3 = fftContext%Rn3
+    Cn1 = fftContext%Cn1
+    Cn2 = fftContext%Cn2
+    Cn3 = fftContext%Cn3
+    Hn1 = fftContext%Hn1
+    Hn2 = fftContext%Hn2
+    lstartR = fftContext%lstart
 
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
 
@@ -148,6 +164,7 @@
 
     allocate(IDiffr(Rn3,Rn2,Rn1));         IDiffr=0.
     allocate(DQ(Rn3,Rn2,Rn1,3));           DQ=0.
+    allocate(DQ_add_Q(Rn3,Rn2,Rn1,3));     DQ_add_Q=0.
 
     call MPI_Barrier(Mpi_Comm_world,ierr)
 
@@ -157,19 +174,20 @@
 
     if (lexist) then
       passfilename='phaseFra'
-      if     (nPhase==1)  then; call InputxN_P(passfilename,oPhase(:,:,:,1))   !tuy39b
-      elseif (nPhase==2)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2))
-      elseif (nPhase==3)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3))
-      elseif (nPhase==4)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4))
-      elseif (nPhase==5)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5))
-      elseif (nPhase==6)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6))
-      elseif (nPhase==7)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7))
-      elseif (nPhase==8)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8))
-      elseif (nPhase==9)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9))
-      elseif (nPhase==10) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10))
-      elseif (nPhase==11) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11))
-      elseif (nPhase==12) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11),oPhase(:,:,:,12))
-      endif   !tuy39f
+      call mupro_input_4D_one_row(passfilename, oPhase)
+      ! if     (nPhase==1)  then; call InputxN_P(passfilename,oPhase(:,:,:,1))   !tuy39b
+      ! elseif (nPhase==2)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2))
+      ! elseif (nPhase==3)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3))
+      ! elseif (nPhase==4)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4))
+      ! elseif (nPhase==5)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5))
+      ! elseif (nPhase==6)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6))
+      ! elseif (nPhase==7)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7))
+      ! elseif (nPhase==8)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8))
+      ! elseif (nPhase==9)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9))
+      ! elseif (nPhase==10) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10))
+      ! elseif (nPhase==11) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11))
+      ! elseif (nPhase==12) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11),oPhase(:,:,:,12))
+      ! endif   !tuy39f
 
     else
       if(rank==0) print *, "File phaseFra.in not provided. Using a pure phase 1."   !tuy40
@@ -189,18 +207,19 @@
     if (lexist) then
       passfilename='strucOrd'
       if     (nStruc==0)  then; if(rank==0) print *, "File strucOrd.in skipped since nStruc = 0."; if(rank==0) print *   !tuy40b
-      elseif (nStruc==1)  then; call InputxN_P(passfilename,oStruc(:,:,:,1))
-      elseif (nStruc==2)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2))
-      elseif (nStruc==3)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3))
-      elseif (nStruc==4)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4))
-      elseif (nStruc==5)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5))
-      elseif (nStruc==6)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6))
-      elseif (nStruc==7)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7))
-      elseif (nStruc==8)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8))
-      elseif (nStruc==9)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9))
-      elseif (nStruc==10) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10))
-      elseif (nStruc==11) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11))
-      elseif (nStruc==12) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11),oStruc(:,:,:,12))
+      elseif  (nStruc/=0) then; call mupro_input_4D_one_row(passfilename, oStruc)
+      ! elseif (nStruc==1)  then; call InputxN_P(passfilename,oStruc(:,:,:,1))
+      ! elseif (nStruc==2)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2))
+      ! elseif (nStruc==3)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3))
+      ! elseif (nStruc==4)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4))
+      ! elseif (nStruc==5)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5))
+      ! elseif (nStruc==6)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6))
+      ! elseif (nStruc==7)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7))
+      ! elseif (nStruc==8)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8))
+      ! elseif (nStruc==9)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9))
+      ! elseif (nStruc==10) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10))
+      ! elseif (nStruc==11) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11))
+      ! elseif (nStruc==12) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11),oStruc(:,:,:,12))
       endif
 !      call InputxN_P(passfilename,px,py,pz)
 !      px = px /p0
@@ -224,7 +243,8 @@
 
     if (lexist) then
       passfilename='displace'
-      call InputxN_P(passfilename,u(:,:,:,1),u(:,:,:,2),u(:,:,:,3))
+      call mupro_input_4D_one_row(passfilename, u)
+      ! call InputxN_P(passfilename,u(:,:,:,1),u(:,:,:,2),u(:,:,:,3))
 
     else
       if(rank==0) print *, "File displace.in not provided. Using mechanical displacement = 0."   !tuy40
@@ -249,13 +269,19 @@
 1001  format(i10,30es16.7e3)
 
     passfilename = 'I'
-    call outputxN_P(passfilename,IDiffr)
+    ! call outputxN_P(passfilename,IDiffr)
+    call mupro_output_3D(passfilename, kt, IDiffr)
 
     passfilename = 'lg_{10}I'
-    call outputxN_P(passfilename,dlog(IDiffr)/dlog(10.D0))
+    ! call outputxN_P(passfilename,dlog(IDiffr)/dlog(10.D0))
+    call mupro_output_3D(passfilename, kt, dlog(IDiffr)/dlog(10.D0))
 
     passfilename = 'qVector'   !tuy37
-    call outputxN_P(passfilename,DQ(:,:,:,1)+QCenter(1),DQ(:,:,:,2)+QCenter(2),DQ(:,:,:,3)+QCenter(3))   !
+    DQ_add_Q(:,:,:,1) = DQ(:,:,:,1) + QCenter(1)
+    DQ_add_Q(:,:,:,2) = DQ(:,:,:,2) + QCenter(2)
+    DQ_add_Q(:,:,:,3) = DQ(:,:,:,3) + QCenter(3)
+    call mupro_output_4D_one_row(passfilename, kt, DQ_add_Q)
+    ! call outputxN_P(passfilename,DQ(:,:,:,1)+QCenter(1),DQ(:,:,:,2)+QCenter(2),DQ(:,:,:,3)+QCenter(3))   !
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! end of program !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call mpi_barrier(Mpi_comm_world,ierr)

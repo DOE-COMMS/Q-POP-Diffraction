@@ -1,0 +1,245 @@
+{
+    "version": 2,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "linux-Debug-dev",
+            "displayName": "Linux x64 intel Debug",
+            "description": "Sets Ninja, intel compilers, x64 architecture, debug build, build/install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/debug",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TEST": "ON",
+                "CMAKE_INSTALL_PREFIX": "$ENV{HOME}/mupro/bin/debug",
+                "CMAKE_C_COMPILER": "icx",
+                "CMAKE_CXX_COMPILER": "icpx",
+                "CMAKE_Fortran_COMPILER": "ifort",
+                "CPACK_GENERATOR": "TXZ",
+                "CMAKE_BUILD_WITH_INSTALL_RPATH": "ON",
+                "CMAKE_PREFIX_PATH" :"$env{HOME}/mupro/sdk/latest/",
+                "CMAKE_DEBUG_POSTFIX": "d",
+                "MUPRODEV": "ON",
+                 "comment_mupro_DIR": "/opt/mupro/phasefieldsdk/lib/cmake/mupro"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "hostOS": [
+                        "Linux"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "windows-Release",
+            "inherits": "windows-Debug",
+            "displayName": "Windows x64 intel Release",
+            "description": "Sets Ninja, intel compilers, x64 architecture, release build, build/install directory",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "windows-Debug",
+            "inherits": "linux-Debug",
+            "displayName": "Windows x64 intel Debug",
+            "description": "Sets Ninja, intel compilers, x64 architecture, debug build, build/install directory",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "icl",
+                "CMAKE_CXX_COMPILER": "icl",
+                "CMAKE_Fortran_COMPILER": "ifort"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "hostOS": [
+                        "Windows"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "linux-Release",
+            "inherits": "linux-Debug-dev",
+            "displayName": "Linux x64 intel Release",
+            "description": "Sets Ninja, intel compilers, x64 architecture, release build, build/install directory",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/release",
+                "MUPRODEV": "OFF"
+            }
+        },
+        {
+            "name": "linux-Debug",
+            "inherits": "linux-Release",
+            "displayName": "Linux x64 intel Release",
+            "description": "Sets Ninja, intel compilers, x64 architecture, release build, build/install directory",
+            "binaryDir": "${sourceDir}/out/build/debug",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/debug",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "linux-Release-dev",
+            "inherits": "linux-Release",
+            "displayName": "Linux x64 intel Release",
+            "description": "Sets Ninja, intel compilers, x64 architecture, release build, build/install directory",
+            "binaryDir": "${sourceDir}/out/build/release",
+            "cacheVariables": {
+                "MUPRODEV": "ON"
+            }
+        },
+        {
+            "name": "darwin-Debug",
+            "inherits": "linux-Debug",
+            "displayName": "Mac x64 intel Debug",
+            "description": "Sets Ninja, intel compilers, x64 architecture, debug build, build/install directory",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "icx",
+                "CMAKE_CXX_COMPILER": "icpx",
+                "CMAKE_Fortran_COMPILER": "ifort"
+            }
+        },
+        {
+            "name": "darwin-Release",
+            "inherits": "darwin-Debug",
+            "displayName": "Mac x64 intel Release",
+            "description": "Sets Ninja, intel compilers, x64 architecture, release build, build/install directory",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "darwin-Debug",
+            "configurePreset": "darwin-Debug"
+        },
+        {
+            "name": "linux-Debug",
+            "configurePreset": "linux-Debug"
+        },
+        {
+            "name": "windows-Debug",
+            "configurePreset": "windows-Debug"
+        },
+        {
+            "name": "darwin-Release",
+            "configurePreset": "darwin-Release"
+        },
+        {
+            "name": "linux-Release",
+            "configurePreset": "linux-Release"
+        },
+        {
+            "name": "windows-Release",
+            "configurePreset": "windows-Release"
+        },
+        {
+            "name": "linux-Debug-dev",
+            "configurePreset": "linux-Debug-dev"
+        },
+        {
+            "name": "linux-Release-dev",
+            "configurePreset": "linux-Release-dev"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "linux-Release",
+            "configurePreset": "linux-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "linux-Release-dev",
+            "configurePreset": "linux-Release-dev",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "linux-Debug-dev",
+            "configurePreset": "linux-Debug-dev",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "darwin-Release",
+            "configurePreset": "darwin-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "windows-Release",
+            "configurePreset": "windows-Release",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "linux-Debug",
+            "configurePreset": "linux-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "darwin-Debug",
+            "configurePreset": "darwin-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "windows-Debug",
+            "configurePreset": "windows-Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        }
+    ]
+}

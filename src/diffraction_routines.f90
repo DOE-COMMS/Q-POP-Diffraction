@@ -1,6 +1,9 @@
   module mod_interface_diffraction   !tuy22 whole file
 
     implicit none
+    #include"mpif.h"
+
+
 
     INTERFACE
 
@@ -27,7 +30,21 @@
 
   end module
 
-
+  module Size_FFT_Para
+    implicit none
+    !system
+    integer rank, process, ierr
+    integer nx,ny,nz,nf,ns,k1,k2
+    integer*8 kt
+    real*8 lx,ly,lz,dx,dy,dz,dt0
+    integer R(3), C(3), HN(2),lstart(3)
+    integer Rn3,Rn2,Rn1
+    integer Cn3,Cn2,Cn1
+    integer Hn2,Hn1
+    integer lstart3,lstart2,lstartR
+    integer nn
+    integer,allocatable,dimension(:) :: Rn1All,lstartRAll
+  end module
 
   module mod_Diffraction   !tuy21   !tuy22moved
 
@@ -51,7 +68,7 @@
 
     implicit none
 
-    real*8,parameter :: pi = dacos(-1.)
+    real*8,parameter :: pi = dacos(-1.d0)
     real*8,parameter :: l0 = 1.d-9             !length unit   !tuy24
     integer nAtom                              !# of atoms in a unit cell
     integer nPhase                             !total # of phases   !tuy39
@@ -86,12 +103,15 @@
 
   subroutine diffraction_setup(u,strainAvg,oPhase,oStruc,IDiffr,DQ,QCenter,os0_in,nPhase_in,nStruc_in,trans_in)   !tuy24   !tuy29   !tuy30   !tuy39   !tuy40
 
-    use mod_interfaces
+    ! use mod_interfaces
+    use Size_FFT_Para
     use mod_interface_diffraction
-    use simSize
-    use mod_fftw_mpi
+    ! use simSize
+    ! use mod_fftw_mpi
     use mod_Diffraction
     use diffraction
+    use mod_mupro_fft
+    use mod_mupro_io, only: mupro_input_3D, mupro_output_3D
 
     implicit none
 
@@ -252,7 +272,9 @@
 
     if (lexist) then
       passfilename='region'
-      call InputxN_P(passfilename,region)   !tuy33testf
+      call mupro_input_3D(passfilename, region)
+      ! call InputxN_P(passfilename,region)   !tuy33testf
+
 
     else
       if(rank==0) print *, "File region.in not provided. Using default region."   !tuy40
@@ -284,7 +306,8 @@
       region = region/maxval(maxRegion)   !tuy40f
 
       passfilename='region'
-      call outputxN_P(passfilename,region)   !tuy36f
+      ! call outputxN_P(passfilename,region)   !tuy36f
+      call mupro_output_3D(passfilename, kt, region)
 
     endif   !tuy35f
 
@@ -415,12 +438,14 @@
 
   subroutine diffractionCalc
 
-    use mod_interfaces
+    ! use mod_interfaces
     use mod_interface_diffraction
-    use simSize
-    use mod_fftw_mpi
+    ! use simSize
+    ! use mod_fftw_mpi
     use mod_Diffraction
     use diffraction
+    use Size_FFT_Para
+    use mod_mupro_fft, only: mupro_fft_forward
 
     implicit none
 
@@ -535,14 +560,14 @@
     enddo
 
     do n = 1,nAtom
-      tempR = real(  fExpN(:,:,:,n));  call forward_mpi(tempR,tempC);    fExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = imag(  fExpN(:,:,:,n));  call forward_mpi(tempR,tempC);    fExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = real(fU1ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU1ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = imag(fU1ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU1ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = real(fU2ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU2ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = imag(fU2ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU2ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = real(fU3ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU3ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
-      tempR = imag(fU3ExpN(:,:,:,n));  call forward_mpi(tempR,tempC);  fU3ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)   !tuy29f
+      tempR = real(  fExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);    fExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = imag(  fExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);    fExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = real(fU1ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU1ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = imag(fU1ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU1ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = real(fU2ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU2ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = imag(fU2ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU2ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = real(fU3ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU3ExpNRk(:,:,:,n) = tempC/(nx*ny*nz)
+      tempR = imag(fU3ExpN(:,:,:,n));  call mupro_fft_forward(tempR,tempC);  fU3ExpNIk(:,:,:,n) = tempC/(nx*ny*nz)   !tuy29f
     enddo
 
 !tuy27f
@@ -634,8 +659,10 @@
 
   subroutine ArrayFourierToRegular(ArrayA_in,ArrayB_in,Array_out,trans_in)
 
-    use simSize
-    use mod_fftw_mpi
+    ! use simSize
+    ! use mod_fftw_mpi
+    use mod_interface_diffraction
+    use Size_FFT_Para
 
     implicit none
 
