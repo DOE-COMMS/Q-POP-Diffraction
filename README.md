@@ -4,6 +4,10 @@
 tar -cJf examples.tar.xz Examples/
 tar -xJf examples.tar.xz
 ```
+
+## Acknowledgement
+This development of the software was supported as part of the Computational Materials Sciences Program funded by the U.S. Department of Energy, Office of Science, Basic Energy Sciences, under Award No. DE-SC0020145.
+
 ## Compiling with CMake
 This repository uses CMake as the build system.
 ### Executable environment (more than one)

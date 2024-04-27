@@ -31,6 +31,7 @@ jobs:
       - name: Build external doc
         run: |
             cd docs
+            source ~/.bashrc
             make html
             # make latexpdf
       - name: External html for github page
