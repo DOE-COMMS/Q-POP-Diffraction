@@ -453,6 +453,9 @@ The program outputs 4 files as follows.
 * `QVector.00000000.dat` : Stores an array of the reciprocal space vectors $q_1$, $q_2$, and $q_3$ ($nm^{−1}$) of the computed diffraction intensity *I*(q), arranged in a row-major order.
 * `region.00000000.dat` : Stores an array of the weight parameter g(r) (unitless) arranged in a row-major order. For the definition of g(r), see Section 2.6. The data follow a same format with those in *`region.in`*. This output file is generated only if *`region.in`* is not provided.
 
+## Acknowledgement
+This development of the software was supported as part of the Computational Materials Sciences Program funded by the U.S. Department of Energy, Office of Science, Basic Energy Sciences, under Award No. DE-SC0020145.
+
 ## References
 
 [^1]: T. Yang et al. Computing diffraction patterns of microstructures from phase-field simulations. Acta Mater. 239, 118258 (2022).
