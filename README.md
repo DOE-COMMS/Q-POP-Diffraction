@@ -14,7 +14,7 @@ This repository uses CMake as the build system.
 * cmake version 3.27.7
 * ninja version 1.10.1
 * Intel oneAPI 2023 or 2024
-* build muprosdk and openmupro
+* build mupro::openmupro library
 
 ### Building
 
