@@ -98,6 +98,79 @@ Declares the size of the system and the number of phases. The format is as follo
     </tr>
 </table>
 
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c3ow"><span style="font-weight:var(--base-text-weight-semibold, 600)">Data in the file</span></th>
+    <th class="tg-c3ow"></th>
+    <th class="tg-c3ow"></th>
+    <th class="tg-c3ow"><span style="font-weight:var(--base-text-weight-semibold, 600)">Explanation</span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Comment or empty line</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">l1</td>
+    <td class="tg-0pky">l2</td>
+    <td class="tg-0pky">l3</td>
+    <td class="tg-0pky">System size in each direction (in nm)</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">n1</td>
+    <td class="tg-0pky">n2</td>
+    <td class="tg-0pky">n3</td>
+    <td class="tg-0pky">Total number of simulation grids in each direction</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">ns</td>
+    <td class="tg-0pky">nf</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Thickness of the substrate and the film (in grid numbers). For a bulk system, put ns = nf = 0.</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Comment or empty line</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">N</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Total number of phases</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">H</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Total number of structural order parameters</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Comment or empty line</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">ε11</td>
+    <td class="tg-0pky">ε22</td>
+    <td class="tg-0pky">ε33</td>
+    <td class="tg-0pky">Average mechanical strain of the system</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">ε23</td>
+    <td class="tg-0pky">ε13</td>
+    <td class="tg-0pky">ε12</td>
+    <td class="tg-0pky"></td>
+  </tr>
+</tbody>
+</table>
+
 ### 2.2.*parameter.atom.in*
 
 Declares the crystal cell and atomic information. The format is as follows:
