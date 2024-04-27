@@ -4,14 +4,15 @@ if(MUPRODEV)
     message(STATUS the muprod dev is true)
     cmake_path(GET CMAKE_BINARY_DIR FILENAME CurrentDir)
     set(root "/home/tanwen/muprosdk")
-    set(mupro_DIR ${root}/library/out/build/${CurrentDir})
+    # set(mupro_DIR ${root}/library/out/build/${CurrentDir})
     set(openmupro_DIR ${root}/openmupro/out/build/${CurrentDir}/library)
     set(license_DIR ${root}/license/out/build/${CurrentDir}/library)
 endif()
 
-message(STATUS "mupro_DIR is " ${mupro_DIR})
+message(STATUS the open mupro dir ${openmupro_DIR})
 
-find_package(mupro REQUIRED)
+find_package(openmupro)
+# find_package(mupro REQUIRED)
 find_package(MPI REQUIRED)
 find_package(toml-f REQUIRED)
 
@@ -19,7 +20,7 @@ add_executable(${exename})
 
 target_sources(${exename} PRIVATE diffraction_main.f90 diffraction_routines.f90)
 
-target_link_libraries(${exename} PUBLIC mupro::mupro)
+target_link_libraries(${exename} PUBLIC mupro::openmupro)
 
 # target_compile_options(${exename} PUBLIC -g -traceback)
 target_compile_options(${exename} PUBLIC "-O3 -align rec16byte -align array64byte -align all -r8  -traceback")
