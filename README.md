@@ -16,6 +16,21 @@ This repository uses CMake as the build system.
 * Intel oneAPI 2023 or 2024
 * build mupro::openmupro library
 
+### Quick start
+```sh
+git clone https://github.com/muprosoftware/openmupro.git # clone the openmupro repository
+cmake --preset="linux-Debug" -S "." # configure the openmupro cmake project
+cmake --build --preset="linux-Debug" # build the openmupro cmake project
+
+# replace the -Dopenmupro_DIR value with your own path
+cmake --preset="linux-Debug-dev" -S "." -Dopenmupro_DIR="/home/xcheng/code/muprosoftware/muprosdk/openmupro/out/build/debug/library" 
+cmake --build --preset="linux-Debug-dev"
+
+# run executable
+cd out/build/debug/Examples/1.\ Two-phase\ mixture/anisotropic/  #cmake will automatically extract the examples into the build directory
+../../../Diffraction
+```
+
 ### Building
 
 **Note that we are using the `MUPRODEV` option here, which signifies that we are in developer mode and not install mupro::openmupro library, so it's necessary to specify the `compilation paths for mupro::openmupro` in the CMake file under the `src` folder:**
@@ -30,7 +45,7 @@ endif()
 ```
 Generate the build files using CMake:
 ```cmake
-cmake --preset="linux-Debug-dev" .
+cmake --preset="linux-Debug-dev" -S "."
 cd out/build/debug
 ninja
 ```
