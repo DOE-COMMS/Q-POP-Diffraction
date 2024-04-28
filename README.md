@@ -18,10 +18,15 @@ This repository uses CMake as the build system.
 
 ### Quick start
 ```sh
+source /opt/intel/oneapi/setvars.sh # setup the intel oneapi environment
+
 git clone https://github.com/muprosoftware/openmupro.git # clone the openmupro repository
+cd openmupro
 cmake --preset="linux-Debug" -S "." # configure the openmupro cmake project
 cmake --build --preset="linux-Debug" # build the openmupro cmake project
 
+https://github.com/DOE-COMMS/Q-POP-Diffraction.git # clone the Q-POP-Diffraction
+cd Q-POP-Diffraction
 # replace the -Dopenmupro_DIR value with your own path
 cmake --preset="linux-Debug-dev" -S "." -Dopenmupro_DIR="/home/xcheng/code/muprosoftware/muprosdk/openmupro/out/build/debug/library" 
 cmake --build --preset="linux-Debug-dev"
