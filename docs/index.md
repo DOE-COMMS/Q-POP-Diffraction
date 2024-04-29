@@ -484,7 +484,7 @@ The program outputs 4 files as follows.
 ## Acknowledgement
 This development of the software was supported as part of the Computational Materials Sciences Program funded by the U.S. Department of Energy, Office of Science, Basic Energy Sciences, under Award No. DE-SC0020145.
 
-## References
+
 
 [^1]: T. Yang et al. Computing diffraction patterns of microstructures from phase-field simulations. Acta Mater. 239, 118258 (2022).
 [^2]: B.L. Henke, E.M. Gullikson, and J.C. Davis. X-ray interactions: photoabsorption, scattering, transmission, and reflection at E=50-30000 eV, Z=1-92, At. Data Nucl. Data Tables 54, 181 (1993).
