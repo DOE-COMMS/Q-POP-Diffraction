@@ -138,12 +138,12 @@
     nStruc = nStruc_in   !tuy40
     trans = trans_in
 !tuy40    p1 => px;           p2 => py;           p3 => pz
-    u1 => u(:,:,:,1);   u2 => u(:,:,:,2);   u3 => u(:,:,:,3)
+    u1 => u(1,:,:,:);   u2 => u(2,:,:,:);   u3 => u(3,:,:,:)
     eAvg => strainAvg
     op => oPhase   !tuy29   !tuy39
     os => oStruc   !tuy40
     I_out => IDiffr   !tuy30b
-    dmqk1 => DQ(:,:,:,1);   dmqk2 => DQ(:,:,:,2);   dmqk3 => DQ(:,:,:,3)
+    dmqk1 => DQ(1,:,:,:);   dmqk2 => DQ(2,:,:,:);   dmqk3 => DQ(3,:,:,:)
     qC1 => QCenter(1);   qC2 => QCenter(2);   qC3 => QCenter(3)   !tuy33   !tuy30f
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! input parameters !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !tuy24b partly moved        
@@ -544,14 +544,14 @@
         uNM2(:,:,:,n) = u2(:,:,:)
         uNM3(:,:,:,n) = u3(:,:,:)
         do k = 1,nStruc
-          uNM1(:,:,:,n) = uNM1(:,:,:,n) + su1(k,m,n)*os(:,:,:,k)
-          uNM2(:,:,:,n) = uNM2(:,:,:,n) + su2(k,m,n)*os(:,:,:,k)
-          uNM3(:,:,:,n) = uNM3(:,:,:,n) + su3(k,m,n)*os(:,:,:,k)
+          uNM1(:,:,:,n) = uNM1(:,:,:,n) + su1(k,m,n)*os(k,:,:,:)
+          uNM2(:,:,:,n) = uNM2(:,:,:,n) + su2(k,m,n)*os(k,:,:,:)
+          uNM3(:,:,:,n) = uNM3(:,:,:,n) + su3(k,m,n)*os(k,:,:,:)
 !          uNM1(:,:,:,n) = uNM1(:,:,:,n) + su11(m,n)*p1 + su12(m,n)*p2 + su13(m,n)*p3   !tuy38
 !          uNM2(:,:,:,n) = uNM2(:,:,:,n) + su21(m,n)*p1 + su22(m,n)*p2 + su23(m,n)*p3   !
 !          uNM3(:,:,:,n) = uNM3(:,:,:,n) + su31(m,n)*p1 + su32(m,n)*p2 + su33(m,n)*p3   !
         enddo   !tuy40f
-        fExpNM(:,:,:,n) = cdexp( -(0,1)* (qC1*uNM1(:,:,:,n) + qC2*uNM2(:,:,:,n) + qC3*uNM3(:,:,:,n) + q0Gr) ) *fAtom(m,n)*op(:,:,:,m)*region   !tuy41
+        fExpNM(:,:,:,n) = cdexp( -(0,1)* (qC1*uNM1(:,:,:,n) + qC2*uNM2(:,:,:,n) + qC3*uNM3(:,:,:,n) + q0Gr) ) *fAtom(m,n)*op(m,:,:,:)*region   !tuy41
           fExpN(:,:,:,n) =   fExpN(:,:,:,n) + fExpNM(:,:,:,n)
         fU1ExpN(:,:,:,n) = fU1ExpN(:,:,:,n) + uNM1(:,:,:,n) * fExpNM(:,:,:,n)
         fU2ExpN(:,:,:,n) = fU2ExpN(:,:,:,n) + uNM2(:,:,:,n) * fExpNM(:,:,:,n)

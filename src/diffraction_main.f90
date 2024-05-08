@@ -151,20 +151,20 @@
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! allocate and initiate arrays !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    allocate(oPhase(Rn3,Rn2,Rn1,nPhase));  oPhase=0.   !tuy39
+    allocate(oPhase(nPhase,Rn3,Rn2,Rn1));  oPhase=0.   !tuy39
 !tuy39    allocate(iPhase(Rn3,Rn2,Rn1));         iPhase=0.
 
-    allocate(u(Rn3,Rn2,Rn1,3));            u=0.
+    allocate(u(3,Rn3,Rn2,Rn1));            u=0.
 
-    allocate(oStruc(Rn3,Rn2,Rn1,nStruc));  oStruc=0.   !tuy40
+    allocate(oStruc(nStruc,Rn3,Rn2,Rn1));  oStruc=0.   !tuy40
 
 !tuy40    allocate(px(Rn3,Rn2,Rn1));             px=0.
 !    allocate(py(Rn3,Rn2,Rn1));             py=0.
 !    allocate(pz(Rn3,Rn2,Rn1));             pz=0.
 
     allocate(IDiffr(Rn3,Rn2,Rn1));         IDiffr=0.
-    allocate(DQ(Rn3,Rn2,Rn1,3));           DQ=0.
-    allocate(DQ_add_Q(Rn3,Rn2,Rn1,3));     DQ_add_Q=0.
+    allocate(DQ(3,Rn3,Rn2,Rn1));           DQ=0.
+    allocate(DQ_add_Q(3,Rn3,Rn2,Rn1));     DQ_add_Q=0.
 
     call MPI_Barrier(Mpi_Comm_world,ierr)
 
@@ -192,12 +192,12 @@
     else
       if(rank==0) print *, "File phaseFra.in not provided. Using a pure phase 1."   !tuy40
       if(rank==0) print *   !tuy40
-      oPhase(:,:,:,1) = 1.d0   !tuy39
+      oPhase(1,:,:,:) = 1.d0   !tuy39
 
     endif
 
-    oPhase(:k1-1,:,:,:)=0.
-    oPhase(k2+1:,:,:,:)=0.
+    oPhase(:,:k1-1,:,:)=0.
+    oPhase(:,k2+1:,:,:)=0.
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! input structural order parameter field !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     os0 = 1.d0   !tuy40
@@ -277,9 +277,9 @@
     call mupro_output_3D(passfilename, kt, dlog(IDiffr)/dlog(10.D0))
 
     passfilename = 'qVector'   !tuy37
-    DQ_add_Q(:,:,:,1) = DQ(:,:,:,1) + QCenter(1)
-    DQ_add_Q(:,:,:,2) = DQ(:,:,:,2) + QCenter(2)
-    DQ_add_Q(:,:,:,3) = DQ(:,:,:,3) + QCenter(3)
+    DQ_add_Q(1,:,:,:) = DQ(1,:,:,:) + QCenter(1)
+    DQ_add_Q(2,:,:,:) = DQ(2,:,:,:) + QCenter(2)
+    DQ_add_Q(3,:,:,:) = DQ(3,:,:,:) + QCenter(3)
     call mupro_output_4D_one_row(passfilename, kt, DQ_add_Q)
     ! call outputxN_P(passfilename,DQ(:,:,:,1)+QCenter(1),DQ(:,:,:,2)+QCenter(2),DQ(:,:,:,3)+QCenter(3))   !
 
