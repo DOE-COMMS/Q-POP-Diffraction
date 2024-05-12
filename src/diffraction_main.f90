@@ -1,24 +1,24 @@
-  module mod_Main   !tuy35 whole file
+  module mod_Main
     use Size_FFT_Para
     implicit none
 
     integer trans
 
     real*8,parameter :: l0 = 1.d-9             !length unit
-    real*8 os0   !tuy40
+    real*8 os0
+
     character*8 :: passfilename
 
     !Order parameter and displacement
-    real*8,allocatable,dimension(:,:,:,:),target :: oStruc   !tuy40 px,py,pz
+    real*8,allocatable,dimension(:,:,:,:),target :: oStruc
     real*8,allocatable,dimension(:,:,:,:),target :: u
     real*8,target :: strainAvg(6)
 
     integer*8 kt0,ktMax                        !starting time step #; finishing time step #
 
     integer nPhase                             !total # of phases
-    integer nStruc                             !total # of structural order parameters   !tuy40
+    integer nStruc                             !total # of structural order parameters
     real*8,allocatable,dimension(:,:,:,:),target :: oPhase
-!tuy39    real*8,allocatable,dimension(:,:,:) :: iPhase
 
     integer,allocatable,dimension(:) :: ixD,iyD,izD,outD,rankD
     real*8,allocatable,target :: IDiffr(:,:,:),DQ(:,:,:,:)
@@ -31,8 +31,6 @@
 
   program main
 
-    ! use mod_interfaces
-    ! use mod_fftw_mpi
     use mod_Main
     use mod_interface_diffraction
     use mod_mupro_base, only: type_mupro_SizeContext, mupro_size_setup
@@ -65,20 +63,20 @@
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! input parameters !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (rank==0) then                                  
-      open(unit = 1, file = "parameter.system.in")   !tuy38
-      print *, "Input simulation system parameters"   !tuy40
+      open(unit = 1, file = "parameter.system.in")
+      print *, "Input simulation system parameters"
       read(1,*)
       read(1,*),lx,ly,lz
       read(1,*),nx,ny,nz
       read(1,*),ns,nf
       read(1,*)
-      read(1,*),nPhase   !tuy39
-      read(1,*),nStruc   !tuy40
+      read(1,*),nPhase
+      read(1,*),nStruc
       read(1,*)
       read(1,*),strainAvg(1),strainAvg(2),strainAvg(3)
       read(1,*),strainAvg(4),strainAvg(5),strainAvg(6)
       close(1)
-      print *   !tuy40
+      print *
     endif
 
     call MPI_Barrier(MPI_Comm_world,ierr)
@@ -91,22 +89,22 @@
     call MPI_Bcast(nz,               1,   MPI_integer, 0,MPI_Comm_World,ierr)
     call MPI_Bcast(ns,               1,   MPI_integer, 0,MPI_Comm_World,ierr)
     call MPI_Bcast(nf,               1,   MPI_integer, 0,MPI_Comm_World,ierr)
-    call MPI_Bcast(nPhase,           1,   MPI_integer, 0,MPI_Comm_World,ierr)   !tuy39
-    call MPI_Bcast(nStruc,           1,   MPI_integer, 0,MPI_Comm_World,ierr)   !tuy40
+    call MPI_Bcast(nPhase,           1,   MPI_integer, 0,MPI_Comm_World,ierr)
+    call MPI_Bcast(nStruc,           1,   MPI_integer, 0,MPI_Comm_World,ierr)
     call MPI_Bcast(strainAvg,        6,   MPI_real8,   0,MPI_Comm_World,ierr)
  
-    if (nPhase<1.or.nPhase>12) then   !tuy39b
-      if (rank==0) print *, "This program allows 1~12 phases only."   !tuy40b
+    if (nPhase<1.or.nPhase>12) then
+      if (rank==0) print *, "This program allows 1~12 phases only."
       if (rank==0) print *, "You cannot claim", nPhase, "phases."
-      if (rank==0) print *, "Program cancelled"   !tuy40f
+      if (rank==0) print *, "Program cancelled"
       goto 999
-    endif   !tuy39f
-    if (nStruc<0.or.nStruc>12) then   !tuy40b
+    endif
+    if (nStruc<0.or.nStruc>12) then
       if (rank==0) print *, "This program allows 0~12 structural order parameters only."
       if (rank==0) print *, "You cannot claim", nStruc, "structural order parameters."
       if (rank==0) print *, "Program cancelled"
       goto 999
-    endif   !tuy40f
+    endif
     call MPI_Barrier(MPI_Comm_world,ierr)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! setup system size !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -151,16 +149,11 @@
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! allocate and initiate arrays !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    allocate(oPhase(nPhase,Rn3,Rn2,Rn1));  oPhase=0.   !tuy39
-!tuy39    allocate(iPhase(Rn3,Rn2,Rn1));         iPhase=0.
+    allocate(oPhase(nPhase,Rn3,Rn2,Rn1));  oPhase=0.
 
     allocate(u(3,Rn3,Rn2,Rn1));            u=0.
 
-    allocate(oStruc(nStruc,Rn3,Rn2,Rn1));  oStruc=0.   !tuy40
-
-!tuy40    allocate(px(Rn3,Rn2,Rn1));             px=0.
-!    allocate(py(Rn3,Rn2,Rn1));             py=0.
-!    allocate(pz(Rn3,Rn2,Rn1));             pz=0.
+    allocate(oStruc(nStruc,Rn3,Rn2,Rn1));  oStruc=0.
 
     allocate(IDiffr(Rn3,Rn2,Rn1));         IDiffr=0.
     allocate(DQ(3,Rn3,Rn2,Rn1));           DQ=0.
@@ -175,24 +168,11 @@
     if (lexist) then
       passfilename='phaseFra'
       call mupro_input_4D_one_row(passfilename, oPhase)
-      ! if     (nPhase==1)  then; call InputxN_P(passfilename,oPhase(:,:,:,1))   !tuy39b
-      ! elseif (nPhase==2)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2))
-      ! elseif (nPhase==3)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3))
-      ! elseif (nPhase==4)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4))
-      ! elseif (nPhase==5)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5))
-      ! elseif (nPhase==6)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6))
-      ! elseif (nPhase==7)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7))
-      ! elseif (nPhase==8)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8))
-      ! elseif (nPhase==9)  then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9))
-      ! elseif (nPhase==10) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10))
-      ! elseif (nPhase==11) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11))
-      ! elseif (nPhase==12) then; call InputxN_P(passfilename,oPhase(:,:,:,1),oPhase(:,:,:,2),oPhase(:,:,:,3),oPhase(:,:,:,4),oPhase(:,:,:,5),oPhase(:,:,:,6),oPhase(:,:,:,7),oPhase(:,:,:,8),oPhase(:,:,:,9),oPhase(:,:,:,10),oPhase(:,:,:,11),oPhase(:,:,:,12))
-      ! endif   !tuy39f
 
     else
-      if(rank==0) print *, "File phaseFra.in not provided. Using a pure phase 1."   !tuy40
-      if(rank==0) print *   !tuy40
-      oPhase(1,:,:,:) = 1.d0   !tuy39
+      if(rank==0) print *, "File phaseFra.in not provided. Using a pure phase 1."
+      if(rank==0) print *
+      oPhase(1,:,:,:) = 1.d0
 
     endif
 
@@ -200,40 +180,21 @@
     oPhase(:,k2+1:,:,:)=0.
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! input structural order parameter field !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    os0 = 1.d0   !tuy40
+    os0 = 1.d0
     lexist=.false.
     inquire(file='strucOrd.in',exist=lexist)
 
     if (lexist) then
       passfilename='strucOrd'
-      if     (nStruc==0)  then; if(rank==0) print *, "File strucOrd.in skipped since nStruc = 0."; if(rank==0) print *   !tuy40b
+      if     (nStruc==0)  then; if(rank==0) print *, "File strucOrd.in skipped since nStruc = 0."; if(rank==0) print *
       elseif  (nStruc/=0) then; call mupro_input_4D_one_row(passfilename, oStruc)
-      ! elseif (nStruc==1)  then; call InputxN_P(passfilename,oStruc(:,:,:,1))
-      ! elseif (nStruc==2)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2))
-      ! elseif (nStruc==3)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3))
-      ! elseif (nStruc==4)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4))
-      ! elseif (nStruc==5)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5))
-      ! elseif (nStruc==6)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6))
-      ! elseif (nStruc==7)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7))
-      ! elseif (nStruc==8)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8))
-      ! elseif (nStruc==9)  then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9))
-      ! elseif (nStruc==10) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10))
-      ! elseif (nStruc==11) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11))
-      ! elseif (nStruc==12) then; call InputxN_P(passfilename,oStruc(:,:,:,1),oStruc(:,:,:,2),oStruc(:,:,:,3),oStruc(:,:,:,4),oStruc(:,:,:,5),oStruc(:,:,:,6),oStruc(:,:,:,7),oStruc(:,:,:,8),oStruc(:,:,:,9),oStruc(:,:,:,10),oStruc(:,:,:,11),oStruc(:,:,:,12))
       endif
-!      call InputxN_P(passfilename,px,py,pz)
-!      px = px /p0
-!      py = py /p0
-!      pz = pz /p0
       oStruc = oStruc /os0
 
     elseif (nStruc>0) then
       if (rank==0) print *, "Missing file strucOrd.in, which is required for nStruc > 0."
       if (rank==0) print *, "Program cancelled"
       goto 999
-!      px = 0.d0
-!      py = 0.d0
-!tuy40f      pz = 0.d0
 
     endif
 
@@ -244,29 +205,21 @@
     if (lexist) then
       passfilename='displace'
       call mupro_input_4D_one_row(passfilename, u)
-      ! call InputxN_P(passfilename,u(:,:,:,1),u(:,:,:,2),u(:,:,:,3))
 
     else
-      if(rank==0) print *, "File displace.in not provided. Using mechanical displacement = 0."   !tuy40
-      if(rank==0) print *   !tuy40
+      if(rank==0) print *, "File displace.in not provided. Using mechanical displacement = 0."
+      if(rank==0) print *
       u = 0.d0
 
     endif
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! setup-routines !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call diffraction_setup(u,strainAvg,oPhase,oStruc,IDiffr,DQ,QCenter,os0,nPhase,nStruc,trans)   !tuy39   !tuy40
+    call diffraction_setup(u,strainAvg,oPhase,oStruc,IDiffr,DQ,QCenter,os0,nPhase,nStruc,trans)
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! prepare for output !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!tuy37    if(rank==0) open(unit = 35, file = "qCenter.dat")
-!    write(35,'("      kt    QCenter(1,2,3)(nm^-1)")')
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! calculation !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     kt = kt0
     call diffractionCalc
-
-!tuy37    if(rank==0) write(35,1001) kt,QCenter(1),QCenter(2),QCenter(3)
-1001  format(i10,30es16.7e3)
 
     passfilename = 'I'
     ! call outputxN_P(passfilename,IDiffr)
@@ -276,17 +229,14 @@
     ! call outputxN_P(passfilename,dlog(IDiffr)/dlog(10.D0))
     call mupro_output_3D(passfilename, kt, dlog(IDiffr)/dlog(10.D0))
 
-    passfilename = 'qVector'   !tuy37
+    passfilename = 'qVector'
     DQ_add_Q(1,:,:,:) = DQ(1,:,:,:) + QCenter(1)
     DQ_add_Q(2,:,:,:) = DQ(2,:,:,:) + QCenter(2)
     DQ_add_Q(3,:,:,:) = DQ(3,:,:,:) + QCenter(3)
     call mupro_output_4D_one_row(passfilename, kt, DQ_add_Q)
-    ! call outputxN_P(passfilename,DQ(:,:,:,1)+QCenter(1),DQ(:,:,:,2)+QCenter(2),DQ(:,:,:,3)+QCenter(3))   !
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! end of program !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call mpi_barrier(Mpi_comm_world,ierr)
-
-!tuy37    if(rank==0) close(13)
 
 	  print *, "Finished program on Rank ",rank
 
