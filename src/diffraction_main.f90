@@ -145,6 +145,9 @@
     Hn1 = fftContext%Hn1
     Hn2 = fftContext%Hn2
     lstartR = fftContext%lstart
+    lstart3 = fftContext%lstart3
+    trans = fftContext%trans
+    
 
     call MPI_Barrier(MPI_COMM_WORLD,ierr)
 
