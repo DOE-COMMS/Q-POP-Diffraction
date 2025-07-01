@@ -1,0 +1,10 @@
+! Polar vortex in PbTiO3, ordered case
+ 1.         320.       320.       !simulation size (nm)
+ 1          400        400        !# of simulation grids
+ 0          0                     !# of layers of substrate and film
+								   
+ 1                                !total # of phases
+ 3                                !total # of structural order parameters
+								   
+ 0.0        0.0        0.0        !average strain
+ 0.0        0.0        0.0        !average strain
