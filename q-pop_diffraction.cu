@@ -5,25 +5,13 @@
 #include <vector>
 #include <cufftXt.h>
 
+#include "src/constants.hpp"
 #include "src/utils.hpp"
 #include "src/sizeContext.hpp"
 #include "src/readArrays.hpp"
 #include "src/atomList.hpp"
-#include "src/constants.hpp"
-
-__global__
-void scaling_kernel(cufftComplex* data, int element_count, float scale) {
-    const int tid = threadIdx.x + blockIdx.x * blockDim.x;
-    const int stride = blockDim.x * gridDim.x;
-    for (auto i = tid; i < element_count; i += stride) {
-        data[i].x *= scale;
-        data[i].y *= scale;
-    }
-}
-
-using cpudata_t = std::vector<std::complex<float>>;
-using gpus_t = std::vector<int>;
-using dim_t = std::array<size_t, 3>;
+#include "src/diffraction_setup.hpp"
+#include "src/writeArrays.hpp"
 
 int main(int argc, char* argv[]) {
     int readErrors = 0;
@@ -91,7 +79,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-
     // u (displacement field) from displace.in
     size_t u_size = size_t(3 * params.nx * params.ny * params.nz);
     std::vector<double> u(u_size, 0.0);
@@ -152,6 +139,8 @@ int main(int argc, char* argv[]) {
         for (auto &i : region) {
             i /= region_max;
         }
+
+        write4D("region.00000000.dat", region, 1, params.nx, params.ny, params.nz);
     }
     else if (0 == readErrors) {
         std::cerr << "Error reading region.in. Exiting." << std::endl;
@@ -160,6 +149,40 @@ int main(int argc, char* argv[]) {
     else if (1 == readErrors) {
         std::cout << "Successfully read region.in." << std::endl;
     }
+
+    std::vector<double> IDiffr(params.nx * params.ny * params.nz, 3.0);
+    std::vector<double> DQ(3 * params.nx * params.ny * params.nz, 0.0);
+    std::vector<double> QCenter(3, 0.0);
+
+    std::cout << "\nSetting up diffraction\n";
+
+    diffraction diffContext;
+    diffContext.diffraction_setup(&params, &atoms);
+    diffContext.diffraction_calc(&params, &atoms,
+        IDiffr, region, QCenter,
+        oPhase, oStruc, u);
+
+    write4D("I.00000000.dat", IDiffr, 1, params.nx, params.ny, params.nz);
+
+    for (auto& i : IDiffr) {
+        i = log10(i);
+    }
+    write4D("lg_{10}I.00000000.dat", IDiffr, 1, params.nx, params.ny, params.nz);
+
+    for (int p = 0; p < 3; p++) {
+        for (int i = 0; i < params.nx; i++) {
+            for (int j = 0; j < params.ny; j++) {
+                for (int k = 0; k < params.nz; k++) {
+                    DQ[p * params.nx * params.ny * params.nz + i * params.ny * params.nz + j * params.nz + k] += QCenter[p];
+                }
+            }
+        }
+    }
+    write4D("qVector.00000000.dat", DQ, 3, params.nx, params.ny, params.nz);
+
+    std::cout << "\nDiffraction simulation completed." << std::endl;
+
+    diffContext.cleanup();
 
     return EXIT_SUCCESS;
 };
