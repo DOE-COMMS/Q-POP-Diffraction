@@ -26,15 +26,11 @@ struct sizeContext {
 
     double hf, hs, h1, h2, hd, h, hstep;
 
+    int Rn1, Rn2, Rn3;
+    int Cn1, Cn2, Cn3;
+
     bool read(const std::string& filename);
     bool setup();
-};
-
-struct fftContext {
-    double Rn1, Rn2, Rn3;
-    double Cn1, Cn2, Cn3;
-
-    bool setup(sizeContext params);
 };
 
 bool sizeContext::read(const std::string& filename) {
@@ -103,6 +99,14 @@ bool sizeContext::read(const std::string& filename) {
 bool sizeContext::setup() {
     n = nx * ny * nz;
 
+    Rn1 = nx;
+    Rn2 = ny;
+    Rn3 = nz;
+
+    Cn1 = nx;
+    Cn2 = ny;
+    Cn3 = floor(nz/2) + 1;
+
     dx = lx / nx;
     dy = ly / ny;
     dz = lz / nz;
@@ -145,18 +149,6 @@ bool sizeContext::setup() {
     // std::cout << "  ns1 = " << ns1 << ", k0 = " << k0 << std::endl;
     // std::cout << "  hf = " << hf << ", hs = " << hs << ", h1 = " << h1
     //           << ", h2 = " << h2 << ", hd = " << hd << std::endl;
-
-    return true;
-}
-
-bool fftContext::setup(sizeContext params) {
-    Rn1 = params.nx;
-    Rn2 = params.ny;
-    Rn3 = params.nz;
-
-    Cn1 = params.nx;
-    Cn2 = params.ny;
-    Cn3 = floor(params.nz/2) + 1;
 
     return true;
 }

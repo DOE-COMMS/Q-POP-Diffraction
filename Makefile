@@ -48,7 +48,7 @@ CUDA_TOOLKIT := $(shell dirname $$(command -v nvcc))/..
 INC          := -I$(CUDA_TOOLKIT)/include -I./src
 DEPS		 := $(wildcard src/*.hpp)
 LIBS         := -L$(CUDA_TOOLKIT)/lib64 -lcufft
-FLAGS        := -O3 -std=c++17
+FLAGS        := -O0 -g -G -std=c++17
 
 TARGETS      := q-pop_diffraction
 SRC          := q-pop_diffraction.cu
