@@ -5,13 +5,13 @@
 #include <vector>
 #include <cufftXt.h>
 
+#include "src/writeArrays.hpp"
 #include "src/constants.hpp"
 #include "src/utils.hpp"
 #include "src/sizeContext.hpp"
 #include "src/readArrays.hpp"
 #include "src/atomList.hpp"
 #include "src/diffraction_setup.hpp"
-#include "src/writeArrays.hpp"
 
 int main(int argc, char* argv[]) {
     int readErrors = 0;
@@ -139,8 +139,6 @@ int main(int argc, char* argv[]) {
         for (auto &i : region) {
             i /= region_max;
         }
-
-        write4D("region.00000000.dat", region, 1, params.nx, params.ny, params.nz);
     }
     else if (0 == readErrors) {
         std::cerr << "Error reading region.in. Exiting." << std::endl;
@@ -149,6 +147,8 @@ int main(int argc, char* argv[]) {
     else if (1 == readErrors) {
         std::cout << "Successfully read region.in." << std::endl;
     }
+
+    write4D("region.00000000.dat", region, 1, params.nx, params.ny, params.nz);
 
     std::vector<double> IDiffr(params.nx * params.ny * params.nz, 3.0);
     std::vector<double> DQ(3 * params.nx * params.ny * params.nz, 0.0);
@@ -169,20 +169,19 @@ int main(int argc, char* argv[]) {
     }
     write4D("lg_{10}I.00000000.dat", IDiffr, 1, params.nx, params.ny, params.nz);
 
-    for (int p = 0; p < 3; p++) {
-        for (int i = 0; i < params.nx; i++) {
-            for (int j = 0; j < params.ny; j++) {
-                for (int k = 0; k < params.nz; k++) {
-                    DQ[p * params.nx * params.ny * params.nz + i * params.ny * params.nz + j * params.nz + k] += QCenter[p];
-                }
+    for (int i = 0; i < params.nx; i++) {
+        for (int j = 0; j < params.ny; j++) {
+            for (int k = 0; k < params.nz; k++) {
+                int idx = i * params.ny * params.nz + j * params.nz + k;
+                DQ[0 * params.nx * params.ny * params.nz + idx] = diffContext.mqk1_out[idx] + diffContext.qC1 - diffContext.qC10;
+                DQ[1 * params.nx * params.ny * params.nz + idx] = diffContext.mqk2_out[idx] + diffContext.qC2 - diffContext.qC20;
+                DQ[2 * params.nx * params.ny * params.nz + idx] = diffContext.mqk3_out[idx] + diffContext.qC3 - diffContext.qC30;
             }
         }
     }
     write4D("qVector.00000000.dat", DQ, 3, params.nx, params.ny, params.nz);
 
     std::cout << "\nDiffraction simulation completed." << std::endl;
-
-    diffContext.cleanup();
 
     return EXIT_SUCCESS;
 };

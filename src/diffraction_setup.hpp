@@ -36,7 +36,7 @@ struct diffraction {
         std::vector<double>& QCenter, std::vector<double>& oPhase,
         std::vector<double>& oStruc, std::vector<double>& u);
 
-    void ArrayFourierToRegular(std::vector<double> A, std::vector<double> B, std::vector<double> out, sizeContext* params);
+    void ArrayFourierToRegular(const std::vector<double> A, const std::vector<double> B, std::vector<double>& out, sizeContext* params);
 };
 
 void diffraction::diffraction_setup(sizeContext* params, atomList* atoms) {
@@ -203,14 +203,13 @@ void diffraction::diffraction_setup(sizeContext* params, atomList* atoms) {
             for (int y = 0; y < params->Cn2; y++) {
                 for (int z = 0; z < params->Cn3; z++) {
                     int idx = x * params->Cn2 * params->Cn3 + y * params->Cn3 + z;
-                    int stride = params->Cn1 * params->Cn2 * params->Cn3;
-                    idx += i * stride;
+                    int aidx = idx + i * (params->Cn1 * params->Cn2 * params->Cn3);
 
-                    std::complex<double> temp = { 0.0, -mqkA1[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 0] - mqkA2[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 1] - mqkA3[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 2] };
-                    fA[idx] = exp(temp) / VCell;
+                    std::complex<double> temp = { 0.0, -mqkA1[idx] * DRAtom[i * 3] - mqkA2[idx] * DRAtom[i * 3 + 1] - mqkA3[idx] * DRAtom[i * 3 + 2] };
+                    fA[aidx] = exp(temp) / VCell;
 
-                    temp = { 0.0, -mqkB1[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 0] - mqkB2[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 1] - mqkB3[x * params->Cn2 * params->Cn3 + y * params->Cn3 + z] * DRAtom[i * 3 + 2] };
-                    fB[idx] = exp(temp) / VCell;
+                    temp = { 0.0, -mqkB1[idx] * DRAtom[i * 3] - mqkB2[idx] * DRAtom[i * 3 + 1] - mqkB3[idx] * DRAtom[i * 3 + 2] };
+                    fB[aidx] = exp(temp) / VCell;
                 }
             }
         }
@@ -406,7 +405,7 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
                 int idx = i * params->Cn2 * params->Cn3 + j * params->Cn3 + k;
 
                 for (int a = 0; a < atoms->nAtom; a++) {
-                    int aidx = a * params->Cn1 * params->Cn2 * params->Cn3;
+                    int aidx = a * params->Cn1 * params->Cn2 * params->Cn3 + idx;
 
                     AmpA[idx] += fExpN_rk[aidx] + (std::complex<double>){0.0, 1.0} * fExpN_ik[aidx];
                     AmpA[idx] -= (std::complex<double>) { 0.0, 1.0 } * (mqkA1[idx] * fU1ExpN_rk[aidx] + mqkA2[idx] * fU2ExpN_rk[aidx] + mqkA3[idx] * fU3ExpN_rk[aidx]);
@@ -433,18 +432,18 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
     ArrayFourierToRegular(IA, IB, IDiffr, params);
 }
 
-void diffraction::ArrayFourierToRegular(std::vector<double> A, std::vector<double> B, std::vector<double> out, sizeContext* params) {
+void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::vector<double> B, std::vector<double> &out, sizeContext* params) {
 
     std::vector<double> temp(params->n, 0.0);
     for (int i = 0; i < params->Cn1; i++) {
         for (int j = 0; j < params->Cn2; j++) {
             for (int k = 0; k < params->Cn3; k++) {
-                int kk = (params->nz + 2 - k - 1 + params->nz) % params->nz + 1;
-                int jj = (params->ny + 2 - j - 1 + params->ny) % params->ny + 1;
-                int ii = (params->nx + 2 - i - 1 + params->nx) % params->nx + 1;
+                int kk = ((params->nz - k + params->nz) % params->nz);
+                int jj = ((params->ny - j + params->ny) % params->ny);
+                int ii = ((params->nx - i + params->nx) % params->nx);
 
                 temp[i * params->Rn2 * params->Rn3 + j * params->Rn3 + k] = A[i * params->Cn2 * params->Cn3 + j * params->Cn3 + k];
-                if (kk > params->Cn3 && kk < params->nz && jj < params->ny && ii < params->nx)
+                if (kk >= params->Cn3 && kk < params->nz && jj < params->ny && ii < params->nx)
                     temp[ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk] = B[i * params->Cn2 * params->Cn3 + j * params->Cn3 + k];
             }
         }
@@ -453,9 +452,9 @@ void diffraction::ArrayFourierToRegular(std::vector<double> A, std::vector<doubl
     for (int i = 0; i < params->Rn1; i++) {
         for (int j = 0; j < params->Rn2; j++) {
             for (int k = 0; k < params->Rn3; k++) {
-                int kk = (params->nz / 2 - 1) % params->nz + 1;
-                int jj = (params->nx / 2 - 1) % params->ny + 1;
-                int ii = (params->nx / 2 - 1) % params->nx + 1;
+                int ii = ((i + params->nx/2) % params->nx);
+                int jj = ((j + params->ny/2) % params->ny);
+                int kk = ((k + params->nz/2) % params->nz);
 
                 out[ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk] = temp[i * params->Rn2 * params->Rn3 + j * params->Rn3 + k];
             }
