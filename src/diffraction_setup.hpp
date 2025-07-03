@@ -40,25 +40,24 @@ struct diffraction {
 };
 
 void diffraction::diffraction_setup(sizeContext* params, atomList* atoms) {
-    VCell = atoms->aC[0][0] * atoms->aC[1][1] * atoms->aC[2][2] + \
-        atoms->aC[0][1] * atoms->aC[1][2] * atoms->aC[2][0] + \
-        atoms->aC[0][2] * atoms->aC[1][0] * atoms->aC[2][1] - \
-        atoms->aC[0][0] * atoms->aC[1][2] * atoms->aC[2][1] - \
-        atoms->aC[0][1] * atoms->aC[1][0] * atoms->aC[2][2] - \
-        atoms->aC[0][2] * atoms->aC[1][1] * atoms->aC[2][0];
+    VCell = static_cast<double>(atoms->aC[0][0] * atoms->aC[1][1] * atoms->aC[2][2]) + \
+        static_cast<double>(atoms->aC[0][1] * atoms->aC[1][2] * atoms->aC[2][0]) + \
+        static_cast<double>(atoms->aC[0][2] * atoms->aC[1][0] * atoms->aC[2][1]) - \
+        static_cast<double>(atoms->aC[0][0] * atoms->aC[1][2] * atoms->aC[2][1]) - \
+        static_cast<double>(atoms->aC[0][1] * atoms->aC[1][0] * atoms->aC[2][2]) - \
+        static_cast<double>(atoms->aC[0][2] * atoms->aC[1][1] * atoms->aC[2][0]);
 
+    bC[0][0] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[1][1] * atoms->aC[2][2] - atoms->aC[1][2] * atoms->aC[2][1]);
+    bC[0][1] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[1][2] * atoms->aC[2][0] - atoms->aC[1][0] * atoms->aC[2][2]);
+    bC[0][2] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[1][0] * atoms->aC[2][1] - atoms->aC[1][1] * atoms->aC[2][0]);
 
-    bC[0][0] = 2 * M_PI / VCell * (atoms->aC[1][1] * atoms->aC[2][2] - atoms->aC[1][2] * atoms->aC[2][1]);
-    bC[0][1] = 2 * M_PI / VCell * (atoms->aC[1][2] * atoms->aC[2][0] - atoms->aC[1][0] * atoms->aC[2][2]);
-    bC[0][2] = 2 * M_PI / VCell * (atoms->aC[1][0] * atoms->aC[2][1] - atoms->aC[1][1] * atoms->aC[2][0]);
+    bC[1][0] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][2] * atoms->aC[2][1] - atoms->aC[0][1] * atoms->aC[2][2]);
+    bC[1][1] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][0] * atoms->aC[2][2] - atoms->aC[0][2] * atoms->aC[2][0]);
+    bC[1][2] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][1] * atoms->aC[2][0] - atoms->aC[0][0] * atoms->aC[2][1]);
 
-    bC[1][0] = 2 * M_PI / VCell * (atoms->aC[0][2] * atoms->aC[2][1] - atoms->aC[0][1] * atoms->aC[2][2]);
-    bC[1][1] = 2 * M_PI / VCell * (atoms->aC[0][0] * atoms->aC[2][2] - atoms->aC[0][2] * atoms->aC[2][0]);
-    bC[1][2] = 2 * M_PI / VCell * (atoms->aC[0][1] * atoms->aC[2][0] - atoms->aC[0][0] * atoms->aC[2][1]);
-
-    bC[2][0] = 2 * M_PI / VCell * (atoms->aC[0][1] * atoms->aC[1][2] - atoms->aC[0][2] * atoms->aC[1][1]);
-    bC[2][1] = 2 * M_PI / VCell * (atoms->aC[0][2] * atoms->aC[1][0] - atoms->aC[0][0] * atoms->aC[1][2]);
-    bC[2][2] = 2 * M_PI / VCell * (atoms->aC[0][0] * atoms->aC[1][1] - atoms->aC[0][1] * atoms->aC[1][0]);
+    bC[2][0] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][1] * atoms->aC[1][2] - atoms->aC[0][2] * atoms->aC[1][1]);
+    bC[2][1] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][2] * atoms->aC[1][0] - atoms->aC[0][0] * atoms->aC[1][2]);
+    bC[2][2] = 2.0 * M_PI / VCell * static_cast<double>(atoms->aC[0][0] * atoms->aC[1][1] - atoms->aC[0][1] * atoms->aC[1][0]);
 
     hM1 = std::lround((atoms->q00[0] * atoms->aC[0][0] + atoms->q00[1] * atoms->aC[0][1] + atoms->q00[2] * atoms->aC[0][2]) / (2 * M_PI));
     hM2 = std::lround((atoms->q00[0] * atoms->aC[1][0] + atoms->q00[1] * atoms->aC[1][1] + atoms->q00[2] * atoms->aC[1][2]) / (2 * M_PI));
@@ -89,26 +88,26 @@ void diffraction::diffraction_setup(sizeContext* params, atomList* atoms) {
             for (int k = 0; k < params->Cn3; k++) {
                 int idx = i * params->Cn2 * params->Cn3 + j * params->Cn3 + k;
 
-                mqk1[idx] = i;
-                if (i >= params->nx / 2) mqk1[idx] = i - params->nx;
+                mqk1[idx] = static_cast<double>(i);
+                if (i >= params->nx / 2) mqk1[idx] = static_cast<double>(i - params->nx);
 
-                mqk1[idx] *= 2.0 * M_PI / params->lx;
+                mqk1[idx] *= 2.0 * M_PI / static_cast<double>(params->lx);
 
                 mqkA1[idx] = mqk1[idx] + qC10;
                 mqkB1[idx] = -mqk1[idx] + qC10;
 
-                mqk2[idx] = j;
-                if (j >= params->ny / 2) mqk2[idx] = j - params->ny;
+                mqk2[idx] = static_cast<double>(j);
+                if (j >= params->ny / 2) mqk2[idx] = static_cast<double>(j - params->ny);
 
-                mqk2[idx] *= 2.0 * M_PI / params->ly;
+                mqk2[idx] *= 2.0 * M_PI / static_cast<double>(params->ly);
 
                 mqkA2[idx] = mqk2[idx] + qC20;
                 mqkB2[idx] = -mqk2[idx] + qC20;
 
-                mqk3[idx] = k;
-                if (k >= params->nz / 2) mqk3[idx] = k - params->nz;
+                mqk3[idx] = static_cast<double>(k);
+                if (k >= params->nz / 2) mqk3[idx] = static_cast<double>(k - params->nz);
 
-                mqk3[idx] *= 2.0 * M_PI / params->lz;
+                mqk3[idx] *= 2.0 * M_PI / static_cast<double>(params->lz);
 
                 mqkA3[idx] = mqk3[idx] + qC30;
                 mqkB3[idx] = -mqk3[idx] + qC30;
@@ -189,15 +188,15 @@ void diffraction::diffraction_setup(sizeContext* params, atomList* atoms) {
 
     for (int i = 0; i < this->nAtom; i++) {
 
-        DRAtom[i * 3 + 0] = atoms->xAtom[i][0] * atoms->aC[0][0] + \
-            atoms->xAtom[i][1] * atoms->aC[1][0] + \
-            atoms->xAtom[i][2] * atoms->aC[2][0];
-        DRAtom[i * 3 + 1] = atoms->xAtom[i][0] * atoms->aC[0][1] + \
-            atoms->xAtom[i][1] * atoms->aC[1][1] + \
-            atoms->xAtom[i][2] * atoms->aC[2][1];
-        DRAtom[i * 3 + 2] = atoms->xAtom[i][0] * atoms->aC[0][2] + \
-            atoms->xAtom[i][1] * atoms->aC[1][2] + \
-            atoms->xAtom[i][2] * atoms->aC[2][2];
+        DRAtom[i * 3 + 0] = static_cast<double>(atoms->xAtom[i][0] * atoms->aC[0][0]) + \
+            static_cast<double>(atoms->xAtom[i][1] * atoms->aC[1][0]) + \
+            static_cast<double>(atoms->xAtom[i][2] * atoms->aC[2][0]);
+        DRAtom[i * 3 + 1] = static_cast<double>(atoms->xAtom[i][0] * atoms->aC[0][1]) + \
+            static_cast<double>(atoms->xAtom[i][1] * atoms->aC[1][1]) + \
+            static_cast<double>(atoms->xAtom[i][2] * atoms->aC[2][1]);
+        DRAtom[i * 3 + 2] = static_cast<double>(atoms->xAtom[i][0] * atoms->aC[0][2]) + \
+            static_cast<double>(atoms->xAtom[i][1] * atoms->aC[1][2]) + \
+            static_cast<double>(atoms->xAtom[i][2] * atoms->aC[2][2]);
 
         for (int x = 0; x < params->Cn1; x++) {
             for (int y = 0; y < params->Cn2; y++) {
@@ -252,9 +251,9 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
         for (int j = 0; j < params->ny; j++) {
             for (int k = 0; k < params->nz; k++) {
                 int idx = i * params->ny * params->nz + j * params->nz + k;
-                q0Gr[idx] += (qC1 - G1) * (i + 1) * params->dx;
-                q0Gr[idx] += (qC2 - G2) * (j + 1) * params->dy;
-                q0Gr[idx] += (qC3 - G3) * (k + 1) * params->dz;
+                q0Gr[idx] += (qC1 - G1) * static_cast<double>(i + 1) * static_cast<double>(params->dx);
+                q0Gr[idx] += (qC2 - G2) * static_cast<double>(j + 1) * static_cast<double>(params->dy);
+                q0Gr[idx] += (qC3 - G3) * static_cast<double>(k + 1) * static_cast<double>(params->dz);
             }
         }
     }
@@ -275,24 +274,24 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
             std::vector<double> uNM2(params->n, 0.0);
             std::vector<double> uNM3(params->n, 0.0);
 
-            if (u.size() == 3 * params->n) {
-                std::copy(u.begin(), u.begin() + params->n, uNM1.begin());
-                std::copy(u.begin() + params->n, u.begin() + 2 * params->n, uNM2.begin());
-                std::copy(u.begin() + 2 * params->n, u.begin() + 3 * params->n, uNM3.begin());
+            if (u.size() == static_cast<size_t>(3 * params->n)) {
+                std::copy(u.begin(), u.begin() + static_cast<size_t>(params->n), uNM1.begin());
+                std::copy(u.begin() + static_cast<size_t>(params->n), u.begin() + static_cast<size_t>(2 * params->n), uNM2.begin());
+                std::copy(u.begin() + static_cast<size_t>(2 * params->n), u.begin() + static_cast<size_t>(3 * params->n), uNM3.begin());
             }
 
             for (int k = 0; k < params->nStruc; k++) {
                 for (int i = 0; i < params->n; i++) {
-                    uNM1[i] += atoms->su1[k][m][n] * oStruc[k * params->n + i];
-                    uNM2[i] += atoms->su2[k][m][n] * oStruc[k * params->n + i];
-                    uNM3[i] += atoms->su3[k][m][n] * oStruc[k * params->n + i];
+                    uNM1[i] += static_cast<double>(atoms->su1[k][m][n]) * oStruc[k * params->n + i];
+                    uNM2[i] += static_cast<double>(atoms->su2[k][m][n]) * oStruc[k * params->n + i];
+                    uNM3[i] += static_cast<double>(atoms->su3[k][m][n]) * oStruc[k * params->n + i];
                 }
             }
 
             for (int i = 0; i < params->n; i++) {
                 std::complex<double> exponent = { 0.0, -(qC1 * uNM1[i] + qC2 * uNM2[i] + qC3 * uNM3[i] + q0Gr[i]) };
                 std::complex<double> exp_term = std::exp(exponent);
-                std::complex<double> fExpNM = exp_term * atoms->fAtom[m][n] * oPhase[m * params->n + i] * region[i];
+                std::complex<double> fExpNM = exp_term * static_cast<std::complex<double>>(atoms->fAtom[m][n]) * oPhase[m * params->n + i] * region[i];
 
                 int idx = n * params->n + i;
                 fExpN_r[idx] += fExpNM.real();
@@ -311,8 +310,8 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
     cufftDoubleReal *d_input;
     cufftDoubleComplex *d_output;
 
-    cudaMalloc(&d_input, params->n * atoms->nAtom * sizeof(cufftReal));
-    cudaMalloc(&d_output, params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom * sizeof(cufftDoubleComplex));
+    cudaMalloc(&d_input, static_cast<size_t>(params->n * atoms->nAtom) * sizeof(cufftDoubleReal));
+    cudaMalloc(&d_output, static_cast<size_t>(params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom) * sizeof(cufftDoubleComplex));
 
     cufftHandle plan;
     cufftCreate(&plan);
@@ -326,13 +325,13 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
                          nullptr, 1, params->Cn1 * params->Cn2 * params->Cn3, // *onembed, ostride, odist
                          CUFFT_D2Z, batch_size);
 
-    double normalization = 1.0 / (double)params->n;
+    double normalization = 1.0 / static_cast<double>(params->n);
 
-    cudaMemcpy(d_input, fExpN_r.data(), params->n * atoms->nAtom * sizeof(cufftDoubleReal), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_input, fExpN_r.data(), static_cast<size_t>(params->n * atoms->nAtom) * sizeof(cufftDoubleReal), cudaMemcpyHostToDevice);
     fExpN_r.resize(0);
     cufftExecD2Z(plan, d_input, d_output);
-    std::vector<std::complex<double>> fExpN_rk(params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom);
-    cudaMemcpy(fExpN_rk.data(), d_output, params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom * sizeof(cufftDoubleComplex), cudaMemcpyDeviceToHost);
+    std::vector<std::complex<double>> fExpN_rk(static_cast<size_t>(params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom));
+    cudaMemcpy(fExpN_rk.data(), d_output, static_cast<size_t>(params->Cn1 * params->Cn2 * params->Cn3 * atoms->nAtom) * sizeof(cufftDoubleComplex), cudaMemcpyDeviceToHost);
 
     cudaMemcpy(d_input, fExpN_i.data(), params->n * atoms->nAtom * sizeof(cufftDoubleReal), cudaMemcpyHostToDevice);
     fExpN_i.resize(0);
@@ -393,8 +392,8 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
     }
 
     // Calculate intensities
-    std::vector<double> IA(params->Cn1 * params->Cn2 * params->Cn3);
-    std::vector<double> IB(params->Cn1 * params->Cn2 * params->Cn3);
+    std::vector<double> IA(params->Cn1 * params->Cn2 * params->Cn3, 0.0);
+    std::vector<double> IB(params->Cn1 * params->Cn2 * params->Cn3, 0.0);
 
     std::vector<std::complex<double>> AmpA(params->Cn1 * params->Cn2 * params->Cn3, { 0.0, 0.0 });
     std::vector<std::complex<double>> AmpB(params->Cn1 * params->Cn2 * params->Cn3, { 0.0, 0.0 });
@@ -407,15 +406,20 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
                 for (int a = 0; a < atoms->nAtom; a++) {
                     int aidx = a * params->Cn1 * params->Cn2 * params->Cn3 + idx;
 
-                    AmpA[idx] += fExpN_rk[aidx] + (std::complex<double>){0.0, 1.0} * fExpN_ik[aidx];
-                    AmpA[idx] -= (std::complex<double>) { 0.0, 1.0 } * (mqkA1[idx] * fU1ExpN_rk[aidx] + mqkA2[idx] * fU2ExpN_rk[aidx] + mqkA3[idx] * fU3ExpN_rk[aidx]);
-                    AmpA[idx] += (mqkA1[idx] * fU1ExpN_ik[aidx] + mqkA2[idx] * fU2ExpN_ik[aidx] + mqkA3[idx] * fU3ExpN_ik[aidx]);
-                    AmpA[idx] *= fA[aidx];
+                    // Fix: Properly combine real and imaginary parts, don't multiply by fA/fB inside loop
+                    std::complex<double> fExpN_complex = fExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fExpN_ik[aidx];
+                    std::complex<double> fU1ExpN_complex = fU1ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU1ExpN_ik[aidx];
+                    std::complex<double> fU2ExpN_complex = fU2ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU2ExpN_ik[aidx];
+                    std::complex<double> fU3ExpN_complex = fU3ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU3ExpN_ik[aidx];
+
+                    std::complex<double> temp_A = fExpN_complex - std::complex<double>{0.0, 1.0} * 
+                        (mqkA1[idx] * fU1ExpN_complex + mqkA2[idx] * fU2ExpN_complex + mqkA3[idx] * fU3ExpN_complex);
                     
-                    AmpB[idx] += std::conj(fExpN_rk[aidx]) + (std::complex<double>){0.0, 1.0} * std::conj(fExpN_ik[aidx]);
-                    AmpB[idx] -= (std::complex<double>) { 0.0, 1.0 } * (mqkB1[idx] * std::conj(fU1ExpN_rk[aidx]) + mqkB2[idx] * std::conj(fU2ExpN_rk[aidx]) + mqkB3[idx] * std::conj(fU3ExpN_rk[aidx]));
-                    AmpB[idx] += (mqkB1[idx] * std::conj(fU1ExpN_ik[aidx]) + mqkB2[idx] * std::conj(fU2ExpN_ik[aidx]) + mqkB3[idx] * std::conj(fU3ExpN_ik[aidx]));
-                    AmpB[idx] *= fB[aidx];
+                    std::complex<double> temp_B = std::conj(fExpN_complex) - std::complex<double>{0.0, 1.0} * 
+                        (mqkB1[idx] * std::conj(fU1ExpN_complex) + mqkB2[idx] * std::conj(fU2ExpN_complex) + mqkB3[idx] * std::conj(fU3ExpN_complex));
+
+                    AmpA[idx] += temp_A * fA[aidx];
+                    AmpB[idx] += temp_B * fB[aidx];
                 }
 
                 AmpA[idx] *= kfExpA[idx];
@@ -434,17 +438,28 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
 
 void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::vector<double> B, std::vector<double> &out, sizeContext* params) {
 
-    std::vector<double> temp(params->n, 0.0);
+    std::vector<double> temp(static_cast<size_t>(params->n), 0.0);
     for (int i = 0; i < params->Cn1; i++) {
         for (int j = 0; j < params->Cn2; j++) {
             for (int k = 0; k < params->Cn3; k++) {
-                int kk = ((params->nz - k + params->nz) % params->nz);
-                int jj = ((params->ny - j + params->ny) % params->ny);
-                int ii = ((params->nx - i + params->nx) % params->nx);
+                
+                int kk = ((params->nz - k) % params->nz);
+                int jj = ((params->ny - j) % params->ny);
+                int ii = ((params->nx - i) % params->nx);
 
-                temp[i * params->Rn2 * params->Rn3 + j * params->Rn3 + k] = A[i * params->Cn2 * params->Cn3 + j * params->Cn3 + k];
-                if (kk >= params->Cn3 && kk < params->nz && jj < params->ny && ii < params->nx)
-                    temp[ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk] = B[i * params->Cn2 * params->Cn3 + j * params->Cn3 + k];
+                int temp_idx = i * params->Rn2 * params->Rn3 + j * params->Rn3 + k;
+                int fourier_idx = i * params->Cn2 * params->Cn3 + j * params->Rn3 + k;
+                
+                if (temp_idx < params->n && static_cast<size_t>(fourier_idx) < A.size()) {
+                    temp[static_cast<size_t>(temp_idx)] = A[static_cast<size_t>(fourier_idx)];
+                }
+                
+                if (kk >= params->Cn3 && kk < params->nz && jj < params->ny && ii < params->nx) {
+                    int b_idx = ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk;
+                    if (b_idx < params->n && static_cast<size_t>(fourier_idx) < B.size()) {
+                        temp[static_cast<size_t>(b_idx)] = B[static_cast<size_t>(fourier_idx)];
+                    }
+                }
             }
         }
     }
@@ -456,7 +471,12 @@ void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::
                 int jj = ((j + params->ny/2) % params->ny);
                 int kk = ((k + params->nz/2) % params->nz);
 
-                out[ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk] = temp[i * params->Rn2 * params->Rn3 + j * params->Rn3 + k];
+                int out_idx = ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk;
+                int temp_idx = i * params->Rn2 * params->Rn3 + j * params->Rn3 + k;
+                
+                if (static_cast<size_t>(out_idx) < out.size() && static_cast<size_t>(temp_idx) < temp.size()) {
+                    out[static_cast<size_t>(out_idx)] = temp[static_cast<size_t>(temp_idx)];
+                }
             }
         }
     }

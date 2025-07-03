@@ -109,11 +109,12 @@ int main(int argc, char* argv[]) {
         std::cout << "File region.in not provided. Using a default region." << std::endl;
 
         double ix1 = (params.nx + 1) / 2.0 - params.nx / M_PI;
-        double iy1 = (params.ny + 1) / 2.0 - params.ny / M_PI;
-        double iz1 = (params.nz + 1) / 2.0 - params.nz / M_PI;
-
         double ix2 = (params.nx + 1) / 2.0 + params.nx / M_PI;
+
+        double iy1 = (params.ny + 1) / 2.0 - params.ny / M_PI;
         double iy2 = (params.ny + 1) / 2.0 + params.ny / M_PI;
+
+        double iz1 = (params.nz + 1) / 2.0 - params.nz / M_PI;
         double iz2 = (params.nz + 1) / 2.0 + params.nz / M_PI;
 
         double tx = params.nx / 8.0;
@@ -127,9 +128,9 @@ int main(int argc, char* argv[]) {
                 for (int j = 0; j < params.ny; j++) {
                     for (int k = 0; k < params.nz; k++) {
                         int idx = i * params.ny * params.nz + j * params.nz + k;
-                        region[idx] = tanh((k - 1 - iz1) / tz) - tanh((k - 1 - iz2) / tz);
-                        region[idx] *= tanh((j - 1 - iy1) / ty) - tanh((j - 1 - iy2) / ty);
-                        region[idx] *= tanh((i - 1 - ix1) / tx) - tanh((i - 1 - ix2) / tx);
+                        region[idx] = tanh((k + 1 - iz1) / tz) - tanh((k + 1 - iz2) / tz);
+                        region[idx] *= tanh((j + 1 - iy1) / ty) - tanh((j + 1 - iy2) / ty);
+                        region[idx] *= tanh((i + 1 - ix1) / tx) - tanh((i + 1 - ix2) / tx);
                     }
                 }
             }
