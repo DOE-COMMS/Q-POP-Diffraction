@@ -406,17 +406,15 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
                 for (int a = 0; a < atoms->nAtom; a++) {
                     int aidx = a * params->Cn1 * params->Cn2 * params->Cn3 + idx;
 
-                    // Fix: Properly combine real and imaginary parts, don't multiply by fA/fB inside loop
-                    std::complex<double> fExpN_complex = fExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fExpN_ik[aidx];
-                    std::complex<double> fU1ExpN_complex = fU1ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU1ExpN_ik[aidx];
-                    std::complex<double> fU2ExpN_complex = fU2ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU2ExpN_ik[aidx];
-                    std::complex<double> fU3ExpN_complex = fU3ExpN_rk[aidx] + std::complex<double>{0.0, 1.0} * fU3ExpN_ik[aidx];
+                    std::complex<double> temp_A = fExpN_rk[aidx] + std::complex<double>{0.0, 1.0} *fExpN_ik[aidx];
+                    temp_A -= std::complex<double>{0.0, 1.0} *
+                        (mqkA1[idx] * fU1ExpN_rk[aidx] + mqkA2[idx] * fU2ExpN_rk[aidx] + mqkA3[idx] * fU3ExpN_rk[aidx]);
+                    temp_A += (mqkA1[idx] * fU1ExpN_ik[aidx] + mqkA2[idx] * fU2ExpN_ik[aidx] + mqkA3[idx] * fU3ExpN_ik[aidx]);
 
-                    std::complex<double> temp_A = fExpN_complex - std::complex<double>{0.0, 1.0} * 
-                        (mqkA1[idx] * fU1ExpN_complex + mqkA2[idx] * fU2ExpN_complex + mqkA3[idx] * fU3ExpN_complex);
-                    
-                    std::complex<double> temp_B = std::conj(fExpN_complex) - std::complex<double>{0.0, 1.0} * 
-                        (mqkB1[idx] * std::conj(fU1ExpN_complex) + mqkB2[idx] * std::conj(fU2ExpN_complex) + mqkB3[idx] * std::conj(fU3ExpN_complex));
+                    std::complex<double> temp_B = std::conj(fExpN_rk[aidx]) + std::complex<double>{0.0, 1.0} * std::conj(fExpN_ik[aidx]);
+                    temp_B -= std::complex<double>{0.0, 1.0} *
+                        (mqkB1[idx] * std::conj(fU1ExpN_rk[aidx]) + mqkB2[idx] * std::conj(fU2ExpN_rk[aidx]) + mqkB3[idx] * std::conj(fU3ExpN_rk[aidx]));
+                    temp_B += (mqkB1[idx] * std::conj(fU1ExpN_ik[aidx]) + mqkB2[idx] * std::conj(fU2ExpN_ik[aidx]) + mqkB3[idx] * std::conj(fU3ExpN_ik[aidx]));
 
                     AmpA[idx] += temp_A * fA[aidx];
                     AmpB[idx] += temp_B * fB[aidx];
@@ -438,7 +436,7 @@ void diffraction::diffraction_calc(sizeContext* params, atomList* atoms,
 
 void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::vector<double> B, std::vector<double> &out, sizeContext* params) {
 
-    std::vector<double> temp(static_cast<size_t>(params->n), 0.0);
+    std::vector<double> temp(params->n, 0.0);
     for (int i = 0; i < params->Cn1; i++) {
         for (int j = 0; j < params->Cn2; j++) {
             for (int k = 0; k < params->Cn3; k++) {
@@ -448,17 +446,13 @@ void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::
                 int ii = ((params->nx - i) % params->nx);
 
                 int temp_idx = i * params->Rn2 * params->Rn3 + j * params->Rn3 + k;
-                int fourier_idx = i * params->Cn2 * params->Cn3 + j * params->Rn3 + k;
+                int fourier_idx = i * params->Cn2 * params->Cn3 + j * params->Cn3 + k;
                 
-                if (temp_idx < params->n && static_cast<size_t>(fourier_idx) < A.size()) {
-                    temp[static_cast<size_t>(temp_idx)] = A[static_cast<size_t>(fourier_idx)];
-                }
+                temp[temp_idx] = A[fourier_idx];
                 
                 if (kk >= params->Cn3 && kk < params->nz && jj < params->ny && ii < params->nx) {
                     int b_idx = ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk;
-                    if (b_idx < params->n && static_cast<size_t>(fourier_idx) < B.size()) {
-                        temp[static_cast<size_t>(b_idx)] = B[static_cast<size_t>(fourier_idx)];
-                    }
+                    temp[b_idx] = B[fourier_idx];
                 }
             }
         }
@@ -474,9 +468,7 @@ void diffraction::ArrayFourierToRegular(const std::vector<double> A, const std::
                 int out_idx = ii * params->Rn2 * params->Rn3 + jj * params->Rn3 + kk;
                 int temp_idx = i * params->Rn2 * params->Rn3 + j * params->Rn3 + k;
                 
-                if (static_cast<size_t>(out_idx) < out.size() && static_cast<size_t>(temp_idx) < temp.size()) {
-                    out[static_cast<size_t>(out_idx)] = temp[static_cast<size_t>(temp_idx)];
-                }
+                out[out_idx] = temp[temp_idx];
             }
         }
     }

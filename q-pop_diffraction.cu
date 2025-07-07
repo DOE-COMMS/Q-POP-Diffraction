@@ -137,7 +137,11 @@ int main(int argc, char* argv[]) {
         }
 
         double region_max = *std::max_element(region.begin(), region.end());
-        for (auto &i : region) {
+        if (region_max == 0.0) {
+            std::cerr << "Region max is zero. Exiting." << std::endl;
+            return EXIT_FAILURE;
+        }
+        for (auto& i : region) {
             i /= region_max;
         }
     }
@@ -151,8 +155,8 @@ int main(int argc, char* argv[]) {
 
     write4D("region.00000000.dat", region, 1, params.nx, params.ny, params.nz);
 
-    std::vector<double> IDiffr(params.nx * params.ny * params.nz, 3.0);
-    std::vector<double> DQ(3 * params.nx * params.ny * params.nz, 0.0);
+    std::vector<double> IDiffr(params.n, 3.0);
+    std::vector<double> DQ(3 * params.n, 0.0);
     std::vector<double> QCenter(3, 0.0);
 
     std::cout << "\nSetting up diffraction\n";
@@ -170,15 +174,10 @@ int main(int argc, char* argv[]) {
     }
     write4D("lg_{10}I.00000000.dat", IDiffr, 1, params.nx, params.ny, params.nz);
 
-    for (int i = 0; i < params.nx; i++) {
-        for (int j = 0; j < params.ny; j++) {
-            for (int k = 0; k < params.nz; k++) {
-                int idx = i * params.ny * params.nz + j * params.nz + k;
-                DQ[0 * params.nx * params.ny * params.nz + idx] = diffContext.mqk1_out[idx] + diffContext.qC1 - diffContext.qC10;
-                DQ[1 * params.nx * params.ny * params.nz + idx] = diffContext.mqk2_out[idx] + diffContext.qC2 - diffContext.qC20;
-                DQ[2 * params.nx * params.ny * params.nz + idx] = diffContext.mqk3_out[idx] + diffContext.qC3 - diffContext.qC30;
-            }
-        }
+    for (int idx = 0; idx < params.n; idx++) {
+        DQ[0 * params.n + idx] = diffContext.mqk1_out[idx] + diffContext.qC1 - diffContext.qC10;
+        DQ[1 * params.n + idx] = diffContext.mqk2_out[idx] + diffContext.qC2 - diffContext.qC20;
+        DQ[2 * params.n + idx] = diffContext.mqk3_out[idx] + diffContext.qC3 - diffContext.qC30;
     }
     write4D("qVector.00000000.dat", DQ, 3, params.nx, params.ny, params.nz);
 

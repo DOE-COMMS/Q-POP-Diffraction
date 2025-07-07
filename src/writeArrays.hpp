@@ -31,7 +31,7 @@ void write4D(const std::string& filename, std::vector<T> data,
                         << std::setw(5) << k+1 << " ";
                     for (int p = 0; p < dim1; p++) {
                         int index = p * dim2 * dim3 * dim4 + i * dim3 * dim4 + j * dim4 + k;
-                        outfile << std::setw(14) << std::scientific << std::setprecision(7) << data[index] << " ";
+                        outfile << std::setw(14) << std::scientific << std::setprecision(7) << std::uppercase << data[index] << " ";
                     }
                     outfile << "\n";
                 }
