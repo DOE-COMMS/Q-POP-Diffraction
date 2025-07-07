@@ -123,15 +123,13 @@ int main(int argc, char* argv[]) {
 
         std::fill(region.begin(), region.end(), 1.0);
 
-        if (params.nf == 0) {
-            for (int i = 0; i < params.nx; i++) {
-                for (int j = 0; j < params.ny; j++) {
-                    for (int k = 0; k < params.nz; k++) {
-                        int idx = i * params.ny * params.nz + j * params.nz + k;
-                        region[idx] = tanh((k + 1 - iz1) / tz) - tanh((k + 1 - iz2) / tz);
-                        region[idx] *= tanh((j + 1 - iy1) / ty) - tanh((j + 1 - iy2) / ty);
-                        region[idx] *= tanh((i + 1 - ix1) / tx) - tanh((i + 1 - ix2) / tx);
-                    }
+        for (int i = 0; i < params.nx; i++) {
+            for (int j = 0; j < params.ny; j++) {
+                for (int k = 0; k < params.nz; k++) {
+                    int idx = i * params.ny * params.nz + j * params.nz + k;
+                    if (params.nf == 0) region[idx] = tanh((k + 1 - iz1) / tz) - tanh((k + 1 - iz2) / tz);
+                    region[idx] *= tanh((j + 1 - iy1) / ty) - tanh((j + 1 - iy2) / ty);
+                    region[idx] *= tanh((i + 1 - ix1) / tx) - tanh((i + 1 - ix2) / tx);
                 }
             }
         }

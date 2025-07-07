@@ -82,6 +82,15 @@ bool sizeContext::read(const std::string& filename) {
     strainAvg[4] = numbers[idx++];
     strainAvg[5] = numbers[idx++];
 
+    std::cout << "\nRead parameters:" << std::endl;
+    std::cout << "  lx = " << lx << ", ly = " << ly << ", lz = " << lz << std::endl;
+    std::cout << "  nx = " << nx << ", ny = " << ny << ", nz = " << nz << std::endl;
+    std::cout << "  ns = " << ns << ", nf = " << nf << std::endl;
+    std::cout << "  nPhase = " << nPhase << ", nStruc = " << nStruc << std::endl;
+    std::cout << "  strainAvg = [" << strainAvg[0] << ", " << strainAvg[1] << ", " 
+              << strainAvg[2] << ", " << strainAvg[3] << ", " << strainAvg[4] 
+              << ", " << strainAvg[5] << "]\n" << std::endl;
+
     if (nPhase < 1 || nPhase > 12) {
         std::cerr << "This program allows 1~12 phases only. You cannot claim " << nPhase << " phases." << std::endl;
         return false;
