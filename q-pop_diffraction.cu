@@ -7,7 +7,6 @@
 
 #include "src/writeArrays.hpp"
 #include "src/constants.hpp"
-#include "src/utils.hpp"
 #include "src/sizeContext.hpp"
 #include "src/readArrays.hpp"
 #include "src/atomList.hpp"
