@@ -64,6 +64,8 @@ int read4D(const std::string &filename, std::vector<T> &data, int dim1, int dim2
 
             data[idx] = value;
             col++;
+
+            if (col >= dim1) break;
         }
     }
 
