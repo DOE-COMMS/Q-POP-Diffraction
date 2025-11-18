@@ -1,0 +1,10 @@
+# Q-POP Diffraction - Python Requirements
+# Python version: 3.7+
+
+numpy>=1.19.0
+scipy>=1.5.0
+
+# Optional GPU acceleration (requires CUDA)
+# Uncomment the line below if you have a CUDA-capable GPU
+# cupy-cuda11x>=11.0.0  # For CUDA 11.x
+# cupy-cuda12x>=12.0.0  # For CUDA 12.x
