@@ -1,0 +1,31 @@
+{
+    "Name": "Phase1",
+    "Ferroelectric": {
+        "Is_FE": true
+    },
+    "Mechanical": {
+        "LatticeConstants": {
+            "a": 5e-10,
+            "b": 5e-10,
+            "c": 5e-10,
+            "ReferenceTemperature": 300.0
+        },
+        "ThermalExpansion": [
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ]
+        ]
+    }
+}

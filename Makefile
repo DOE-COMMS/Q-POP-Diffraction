@@ -1,64 +1,48 @@
-# Copyright 1993-2021 NVIDIA Corporation.  All rights reserved.
+# Multi-GPU build of Q-POP-Diffraction.
 #
-# NOTICE TO LICENSEE:
+# Compiles src/heffte/qpop_diffraction_mgpu.cu, with the headers beside it, using
+# nvcc into the MPI program bin/qpop_diffraction_mgpu, linked against HeFFTe (distributed FFTs,
+# cuFFT backend), cuFFT, parallel HDF5 and MPI.  `qpop-diffraction --mgpu` looks for the program
+# on PATH, then in bin/.  See docs/installation.md.
 #
-# This source code and/or documentation ("Licensed Deliverables") are
-# subject to NVIDIA intellectual property rights under U.S. and
-# international Copyright laws.
+#   make HEFFTE_DIR=/path/to/heffte HDF5_DIR=/path/to/parallel/hdf5 MPI_DIR=/path/to/mpi
 #
-# These Licensed Deliverables contained herein is PROPRIETARY and
-# CONFIDENTIAL to NVIDIA and is being provided under the terms and
-# conditions of a form of NVIDIA software license agreement by and
-# between NVIDIA and Licensee ("License Agreement") or electronically
-# accepted by Licensee.  Notwithstanding any terms or conditions to
-# the contrary in the License Agreement, reproduction or disclosure
-# of the Licensed Deliverables to any third party without the express
-# written consent of NVIDIA is prohibited.
-#
-# NOTWITHSTANDING ANY TERMS OR CONDITIONS TO THE CONTRARY IN THE
-# LICENSE AGREEMENT, NVIDIA MAKES NO REPRESENTATION ABOUT THE
-# SUITABILITY OF THESE LICENSED DELIVERABLES FOR ANY PURPOSE.  IT IS
-# PROVIDED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY OF ANY KIND.
-# NVIDIA DISCLAIMS ALL WARRANTIES WITH REGARD TO THESE LICENSED
-# DELIVERABLES, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY,
-# NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
-# NOTWITHSTANDING ANY TERMS OR CONDITIONS TO THE CONTRARY IN THE
-# LICENSE AGREEMENT, IN NO EVENT SHALL NVIDIA BE LIABLE FOR ANY
-# SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, OR ANY
-# DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-# WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
-# ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-# OF THESE LICENSED DELIVERABLES.
-#
-# U.S. Government End Users.  These Licensed Deliverables are a
-# "commercial item" as that term is defined at 48 C.F.R. 2.101 (OCT
-# 1995), consisting of "commercial computer software" and "commercial
-# computer software documentation" as such terms are used in 48
-# C.F.R. 12.212 (SEPT 1995) and is provided to the U.S. Government
-# only as a commercial end item.  Consistent with 48 C.F.R.12.212 and
-# 48 C.F.R. 227.7202-1 through 227.7202-4 (JUNE 1995), all
-# U.S. Government End Users acquire the Licensed Deliverables with
-# only those rights set forth herein.
-#
-# Any use of the Licensed Deliverables in individual and commercial
-# software must include, in the user documentation and internal
-# comments to the code, the above Disclaimer and U.S. Government End
-# Users Notice.
-CUDA_TOOLKIT := $(shell dirname $$(command -v nvcc))/..
-INC          := -I$(CUDA_TOOLKIT)/include -I./src
-DEPS		 := $(wildcard src/*.hpp)
-LIBS         := -L$(CUDA_TOOLKIT)/lib64 -lcufft
-FLAGS        := -O3 -std=c++17
+# Heffte_ROOT, HDF5_DIR and MPICH_DIR from the environment are used when set.
+# nvcc does not compile through the MPI compiler wrapper, so MPI is passed explicitly.
 
-TARGETS      := q-pop_diffraction
-SRC          := q-pop_diffraction.cu
+HEFFTE_DIR ?= $(Heffte_ROOT)
+HDF5_DIR   ?=
+MPI_DIR    ?= $(MPICH_DIR)
+CUDA_ARCH  ?= sm_80
 
-all: $(TARGETS)
+HEFFTE_LIB := $(if $(HEFFTE_DIR),$(firstword $(wildcard $(HEFFTE_DIR)/lib64 $(HEFFTE_DIR)/lib)))
 
-$(TARGETS): $(SRC) $(DEPS)
-	nvcc -x cu $(FLAGS) $(INC) $< -o $@ $(LIBS)
+# Cray MPICH aborts CUDA programs that do not link its GPU transport layer (GTL).
+ifdef CRAY_MPICH_ROOTDIR
+GTL_LIBS ?= -L$(CRAY_MPICH_ROOTDIR)/gtl/lib -lmpi_gtl_cuda -Xlinker -rpath=$(CRAY_MPICH_ROOTDIR)/gtl/lib
+endif
+
+TARGET := bin/qpop_diffraction_mgpu
+SRC    := src/heffte/qpop_diffraction_mgpu.cu
+DEPS   := $(wildcard src/heffte/*.hpp src/heffte/*.cuh)
+
+FLAGS := -O3 -std=c++17 -arch=$(CUDA_ARCH) -cudart shared
+INC   := -I$(HEFFTE_DIR)/include -I$(HDF5_DIR)/include -I$(MPI_DIR)/include
+LIBS  := -L$(HEFFTE_LIB) -lheffte -lcufft \
+         -L$(HDF5_DIR)/lib -lhdf5 \
+         -L$(MPI_DIR)/lib -lmpi $(GTL_LIBS) \
+         -Xlinker -rpath=$(HEFFTE_LIB):$(HDF5_DIR)/lib:$(MPI_DIR)/lib
+
+all: $(TARGET)
+
+$(TARGET): $(SRC) $(DEPS)
+	@test -n "$(HEFFTE_LIB)" || (echo "HeFFTe not found: pass HEFFTE_DIR=/path/to/heffte"; exit 1)
+	@test -n "$(HDF5_DIR)" || (echo "Parallel HDF5 not found: pass HDF5_DIR=/path/to/parallel/hdf5"; exit 1)
+	@test -n "$(MPI_DIR)" || (echo "MPI not found: pass MPI_DIR=/path/to/mpi"; exit 1)
+	@mkdir -p bin
+	nvcc $(FLAGS) $(INC) $< -o $@ $(LIBS)
 
 clean:
-	rm -f $(TARGETS)
+	rm -f $(TARGET)
 
-.PHONY: clean all
+.PHONY: all clean

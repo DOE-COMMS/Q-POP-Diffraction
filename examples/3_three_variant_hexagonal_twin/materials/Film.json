@@ -1,0 +1,31 @@
+{
+    "Name": "Film",
+    "Ferroelectric": {
+        "Is_FE": true
+    },
+    "Mechanical": {
+        "LatticeConstants": {
+            "a": 8.660354e-10,
+            "b": 1e-09,
+            "c": 4.0000000000000007e-10,
+            "ReferenceTemperature": 300.0
+        },
+        "ThermalExpansion": [
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qpop-diffraction"
+version = "0.1.0"
+description = "Kinematic X-ray diffraction from Q-POP-FerroDyn polarization and displacement fields"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.20",
+  "h5py>=3.0"
+]
+
+[project.optional-dependencies]
+# GPU support: CuPy, see https://docs.cupy.dev/en/stable/install.html
+gpu = ["cupy"]
+test = ["pytest>=7.0"]
+plot = ["matplotlib>=3.5"]
+
+[project.scripts]
+qpop-diffraction = "qpop_diffraction.cli:main"
+qpop-diffraction-rsm = "qpop_diffraction.rsm:main"
+
+[tool.setuptools]
+packages = ["qpop_diffraction"]
+package-dir = {"qpop_diffraction" = "src/python"}

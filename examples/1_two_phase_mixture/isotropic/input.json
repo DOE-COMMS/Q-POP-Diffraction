@@ -1,0 +1,10 @@
+{
+    "platt_file": "data/P_Lattice_0.h5",
+    "displacement_file": null,
+    "phase_file": "data/phase.h5",
+    "region_file": "data/region.h5",
+    "x_limits": null,
+    "y_limits": null,
+    "z_limits": null,
+    "output_file": "diffraction"
+}

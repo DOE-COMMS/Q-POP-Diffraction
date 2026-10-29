@@ -33,3 +33,23 @@
 
 # Cmake build files
 out/
+# Python
+__pycache__/
+*.egg-info/
+
+# Multi-GPU program
+bin/
+
+# Run outputs and data (test fixtures and example inputs are kept, example outputs are not)
+*.h5
+*.xdmf
+*.dat
+!tests/**
+!examples/**
+examples/**/diffraction*
+examples/**/reciprocal_space_maps/
+**/__pycache__/
+
+# Docs build and Windows download metadata
+docs/_build/
+*:Zone.Identifier

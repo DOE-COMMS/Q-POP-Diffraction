@@ -1,0 +1,35 @@
+{
+    "Mesh": {
+        "NX": 1024,
+        "NY": 1024,
+        "NZ": 1,
+        "DX": 2.5e-09,
+        "DY": 2.5e-09,
+        "DZ": 1e-09
+    },
+    "Rotation": {
+        "Enabled": false
+    },
+    "BoundaryConditions": {
+        "GeometryType": "Bulk"
+    },
+    "SimulationControls": {
+        "Temperature": {
+            "Initial": 300.0
+        }
+    },
+    "Materials": {
+        "NumberOfMaterials": 1,
+        "MaterialNames": [
+            "Film"
+        ],
+        "NumberOfLayers": 1,
+        "LayerTypes": [
+            0
+        ],
+        "LayerSizes": [
+            1
+        ]
+    },
+    "Solvers": {}
+}

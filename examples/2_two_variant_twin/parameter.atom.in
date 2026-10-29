@@ -1,0 +1,12 @@
+! Simple 2-variant twinned crystal
+0.0 8.886 0.0    !reciprocal lattice point (nm^-1)
+0.70711 -0.70711 0.0    !lattice vector (nm)
+0.70711 0.70711 0.0    !lattice vector (nm)
+0.0 0.0 1.0    !lattice vector (nm)
+1    !# of atoms in a unit cell
+0.0 0.0 0.0    !reduced coordinates of atom #1
+1    !phase ID
+100.0 0.0    !form factor of atom #1
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)

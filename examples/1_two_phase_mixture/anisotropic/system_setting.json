@@ -1,0 +1,36 @@
+{
+    "Mesh": {
+        "NX": 800,
+        "NY": 800,
+        "NZ": 1,
+        "DX": 1e-09,
+        "DY": 1e-09,
+        "DZ": 1e-09
+    },
+    "Rotation": {
+        "Enabled": false
+    },
+    "BoundaryConditions": {
+        "GeometryType": "Bulk"
+    },
+    "SimulationControls": {
+        "Temperature": {
+            "Initial": 300.0
+        }
+    },
+    "Materials": {
+        "NumberOfMaterials": 2,
+        "MaterialNames": [
+            "Phase1",
+            "Phase2"
+        ],
+        "NumberOfLayers": 1,
+        "LayerTypes": [
+            0
+        ],
+        "LayerSizes": [
+            1
+        ]
+    },
+    "Solvers": {}
+}

@@ -1,0 +1,17 @@
+! 2-phase mixture, isotropic case
+0.0 12.566 0.0    !reciprocal lattice point (nm^-1)
+0.5 0.0 0.0    !lattice vector (nm)
+0.0 0.5 0.0    !lattice vector (nm)
+0.0 0.0 0.5    !lattice vector (nm)
+1    !# of atoms in a unit cell
+0.0 0.0 0.0    !reduced coordinates of atom #1
+1    !phase ID
+80.0 0.0    !form factor of atom #1
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+2    !phase ID
+40.0 0.0    !form factor of atom #1
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)
+0.0 0.0 0.0    !P -> shift coefficient (none in this example)

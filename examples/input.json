@@ -1,0 +1,30 @@
+{
+  "_comment": [
+    "Example input.json for Q-POP-Diffraction.",
+    "",
+    "platt_file        : Path to a Q-POP-FerroDyn-Kokkos P_Lattice_*.h5 or PLatt_*.h5 file.",
+    "                    The code auto-detects the dataset prefix (P_Lattice_x/y/z or PLatt_x/y/z).",
+    "displacement_file : Path to a Displacement_*.h5 file.  Set to null to use zero displacements.",
+    "x_limits          : [start, end]  0-indexed, inclusive, along x.  Omit or null → full axis.",
+    "y_limits          : same for y.",
+    "z_limits          : same for z.",
+    "phase_file        : Optional HDF5 of phase fractions phase_1 .. phase_<nPhase>, shaped like the fields.",
+    "                    null → one phase per Is_FE material, from materialField.",
+    "region_file       : Optional HDF5 with a scattering weight 'region', shaped like the fields.  null → 1.",
+    "output_file       : Base name for output files (no extension).",
+    "                    Writes {output_file}.h5 and {output_file}.xdmf.",
+    "                    Open {output_file}.xdmf in ParaView for 3-D q-space visualisation."
+  ],
+
+  "platt_file":        "path/to/P_Lattice_00001000.h5",
+  "displacement_file": "path/to/Displacement_00001000.h5",
+
+  "x_limits": [0, 127],
+  "y_limits": [0, 127],
+  "z_limits": [0, 35],
+
+  "phase_file": null,
+  "region_file": null,
+
+  "output_file": "diffraction"
+}
