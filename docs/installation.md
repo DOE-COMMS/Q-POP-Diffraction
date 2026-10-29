@@ -37,13 +37,13 @@ Do the standard build first, then install the requirements below and compile the
 - HDF5 built with parallel (MPI-IO) support.
 - A C++17 compiler.
 
-The multi-GPU build was developed with:
+The multi-GPU build is tested with:
 
 - CUDA 12.9 on NVIDIA A100 GPUs
 - GCC 14
 - Cray MPICH 9.0.1
 - HeFFTe 2.4.1
-- HDF5 1.14.3 (parallel)
+- HDF5 1.14.3.9 (parallel)
 
 Other versions may work but have not been tried.
 
@@ -97,6 +97,8 @@ The variables:
 - `HDF5_DIR`: the parallel HDF5 prefix, with `include/` and `lib/`. Defaults to `$HDF5_DIR` if set, as many HDF5 modules do.
 - `MPI_DIR`: the MPI prefix, with `include/mpi.h` and `lib/libmpi`. Defaults to `$MPICH_DIR` if set. nvcc does not compile through the MPI compiler wrapper, so MPI is passed explicitly.
 - `CUDA_ARCH`: the GPU architecture, default `sm_80` (A100); e.g. `sm_90` for H100.
+- `CUDA_HOME`: the CUDA toolkit, by default found from the location of `nvcc`.
+- `CUFFT_DIR`: the directory holding `libcufft.so`. It is found in `$CUDA_HOME/lib64`, or in `math_libs/<version>/lib64` of the NVIDIA HPC SDK, where cuFFT is installed apart from the compiler.
 
 On HPE Cray systems, the Makefile links Cray MPICH's GPU transport layer (GTL) automatically when `CRAY_MPICH_ROOTDIR` is set. Without it, Cray MPICH aborts CUDA programs with "GPU_SUPPORT_ENABLED is requested, but GTL library is not linked". There, loading the programming environment, CUDA, MPICH and parallel HDF5 modules sets `MPICH_DIR` and `HDF5_DIR`, so only `HEFFTE_DIR` needs to be passed.
 

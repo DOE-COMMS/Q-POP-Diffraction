@@ -41,7 +41,7 @@ The grid is split into slabs of y rows, one per rank, as evenly as possible. Eve
 
 A `region_file` adds 8 bytes per cell, and a `phase_file` adds 8 bytes per phase.
 
-- 4000×4000×68 (1.09e9 cells) needs about 140 GB: 8 GPUs of 40 GB (two nodes of 4), or 4 GPUs of 80 GB (one node).
+- 4000×4000×68 (1.09e9 cells) needs about 140 GB. Measured on one node of 4 × 80 GB A100s: 35.5 GB per GPU. On 40 GB GPUs, use 8 (two nodes of 4) for headroom.
 - 512×512×104 (2.7e7 cells) fits one GPU; the standard build is simpler there.
 
 The `--mgpu` step prints its estimate. Rank 0 prints the largest device memory actually used on any rank.
@@ -54,7 +54,13 @@ The `--mgpu` step prints its estimate. Rank 0 prints the largest device memory a
 
 ## Performance
 
-Rank 0 prints the time spent reading, computing the amplitude (and how much of that was FFTs), and writing. At this size the FFTs themselves are a small part. Measured on NVIDIA A100 nodes with 4 GPUs each, one 1024³ complex transform takes about 0.3 s with HeFFTe on 8 GPUs, and a 5-atom cell needs 20 of them. Reading tens of GB of float64 fields usually dominates. Off-node transposes are bandwidth-bound, so prefer the fewest GPUs that fit, e.g. 80 GB nodes over twice as many 40 GB GPUs.
+Rank 0 prints the time spent reading, computing the amplitude (and how much of that was FFTs), and writing. At this size the FFTs themselves are a small part. A measured example: a 4000×4000×68 PbTiO3 film (5 atoms, 013 reflection) on one node of 4 × 80 GB A100s.
+
+- Total 92 s: reading the fields 77 s, the amplitude 5.3 s (20 FFTs, 4.6 s), writing 10 s.
+- The same calculation on the CPU with NumPy took 29 min and 425 GB of memory.
+- The intensities agree to 2e-14 relative.
+
+Reading tens of GB of float64 fields dominates. Off-node transposes are bandwidth-bound, so prefer the fewest GPUs that fit, e.g. 80 GB nodes over twice as many 40 GB GPUs.
 
 ## Troubleshooting
 

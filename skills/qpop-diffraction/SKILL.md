@@ -39,7 +39,7 @@ Work in the FerroDyn run directory, which holds `system_setting.json`, `material
   - Then launch `qpop_diffraction_mgpu {output_file}_params.h5` with one MPI rank per GPU and `--gpu-bind=none`.
   - There can't be more ranks than y rows.
   - Rank 0 prints the read, amplitude, FFT and write times and the peak device memory.
-  - A 4000×4000×68 grid needs about 140 GB: 8 × 40 GB or 4 × 80 GB.
+  - A 4000×4000×68 grid needs about 140 GB. Measured on 4 × 80 GB: 35.5 GB per GPU and 92 s in total, most of it reading the fields; the CPU path took 29 min. On 40 GB GPUs, use 8.
 - Ask the user which machine and queue to use. Do not rebuild `bin/qpop_diffraction_mgpu` while jobs that use it are queued: they fail at launch with "Permission denied".
 
 ## 3. Read and show the output

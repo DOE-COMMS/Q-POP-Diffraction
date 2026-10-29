@@ -11,7 +11,7 @@ There are two builds; choose one when you install.
 | Build | Computes on | For | Needs |
 |---|---|---|---|
 | Standard | one GPU (CuPy) or the CPU (NumPy) | grids that fit one GPU, e.g. 512×512×104 in ~12 s on an A100 | Python, numpy, h5py; CuPy for the GPU |
-| Multi-GPU | many GPUs, with the MPI program `qpop_diffraction_mgpu` | larger grids, e.g. 4000×4000×68 on 8 GPUs | the standard build plus CUDA, GPU-aware MPI, [HeFFTe](https://github.com/icl-utk-edu/heffte) 2.4.1 and parallel HDF5 |
+| Multi-GPU | many GPUs, with the MPI program `qpop_diffraction_mgpu` | larger grids, e.g. 4000×4000×68 in 1.5 min on 4 A100s | the standard build plus CUDA, GPU-aware MPI, [HeFFTe](https://github.com/icl-utk-edu/heffte) 2.4.1 and parallel HDF5 |
 
 Both read the same inputs and write the same result.
 
@@ -40,7 +40,7 @@ HeFFTe is not part of this repository and must be installed first; [docs/install
 make HEFFTE_DIR=/path/to/heffte HDF5_DIR=/path/to/parallel/hdf5 MPI_DIR=/path/to/mpi
 ```
 
-This compiles the C++/CUDA sources in `src/heffte/` with nvcc. It links the result against HeFFTe, cuFFT, parallel HDF5 and MPI, and writes the executable `bin/qpop_diffraction_mgpu`. `qpop-diffraction --mgpu` looks for the program on `PATH`, then in `bin/`. The build was developed with CUDA 12.9 on A100 GPUs, GCC 14, Cray MPICH 9.0.1, HeFFTe 2.4.1 and HDF5 1.14.3.
+This compiles the C++/CUDA sources in `src/heffte/` with nvcc. It links the result against HeFFTe, cuFFT, parallel HDF5 and MPI, and writes the executable `bin/qpop_diffraction_mgpu`. `qpop-diffraction --mgpu` looks for the program on `PATH`, then in `bin/`. The build is tested with CUDA 12.9 on A100 GPUs, GCC 14, Cray MPICH 9.0.1, HeFFTe 2.4.1 and HDF5 1.14.3.
 
 ## Quick start
 

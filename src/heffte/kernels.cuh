@@ -8,7 +8,7 @@
 struct slab {
     long nx, ny, nz, nyl, yLow;
     double dx, dy, dz;
-    long n() const { return nx * nyl * nz; }
+    __host__ __device__ long n() const { return nx * nyl * nz; }
 };
 
 // 2 pi * numpy.fft.fftfreq(n, h)[i]
